@@ -29,35 +29,54 @@ def generate_file(backend, name, filetype, variation, combination=()):
         os.makedirs(parent)
     with open(path, 'w') as fp:
         fp.write(output)
+    return filename
 
 def generate_media():
     if os.path.exists(GENERATE_MEDIA_DIR):
         shutil.rmtree(GENERATE_MEDIA_DIR)
 
+    generated_files = {}
     backend_class = _load_backend(ROOT_MEDIA_FILTER)
     for filetype, outputs in GENERATE_MEDIA.items():
         for name, input in outputs.items():
             backend = backend_class(filetype=filetype, input=input)
             variations = backend._get_variations_with_input()
             if not variations:
-                generate_file(backend, name, filetype, {})
+                generated = generate_file(backend, name, filetype, {})
+                generated_files.setdefault(filetype, {})
+                generated_files[filetype][(name, ())] = generated
             else:
                 # Generate media files for all variation combinations
-                combinations = product(map(variations.__getitem__, variations.keys()))
+                combinations = product(map(variations.__getitem__, sorted(variations.keys())))
                 for combination in combinations:
-                    variation = dict(zip(variations.keys(), combination))
-                    generate_file(backend, name, filetype, variation, combination)
+                    variation_map = zip(sorted(variations.keys()), combination)
+                    variation = dict(variation_map)
+                    generated = generate_file(backend, name, filetype,
+                                              variation, combination)
+                    generated_files.setdefault(filetype, {})
+                    generated_files[filetype][(name, variation_map)] = generated
 
     media_files = {}
     for root in _get_media_dirs():
         collect_copyable_files(media_files, root)
 
+    copied_files = {}
     for name, source in media_files.items():
-        dst = os.path.join(GENERATE_MEDIA_DIR, name)
+        hash = sha1()
+        with open(source, 'rb') as fp:
+            hash.update(fp.read())
+        base, ext = os.path.splitext(name)
+        filename = '%s-%s%s' % (base, hash.hexdigest(), ext)
+        dst = os.path.join(GENERATE_MEDIA_DIR, filename)
+        copied_files[name] = filename
         parent = os.path.dirname(dst)
         if not os.path.exists(parent):
             os.makedirs(parent)
         shutil.copyfile(source, dst)
+
+    with open('_generated_media_versions.py', 'w') as fp:
+        fp.write('MEDIA_VERSIONS = %r\nCOPY_VERSIONS = %r'
+                 % (generated_files, copied_files))
 
 def collect_copyable_files(media_files, root):
     for root_path, dirs, files in os.walk(root):
