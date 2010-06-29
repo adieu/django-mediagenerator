@@ -10,11 +10,11 @@ class YUICompressor(Filter):
             kwargs['input'] = [{'filter': 'mediagenerator.filters.concat.ConcatFilter',
                                 'input': kwargs.pop('input')}]
         super(YUICompressor, self).__init__(**kwargs)
+        assert self.filetype in ('css', 'js'), (
+            'YUICompressor only supports compilation to css and js. '
+            'The parent filter expects "%s".' % self.filetype)
 
     def get_output(self, variation):
-        if self.filetype not in ('css', 'js'):
-            raise ValueError('YUICompressor only supports CSS and JS files')
-
         for input in self.get_input(variation):
             try:
                 compressor = settings.YUICOMPRESSOR_PATH

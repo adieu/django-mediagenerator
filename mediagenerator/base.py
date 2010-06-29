@@ -1,18 +1,18 @@
 from .utils import _load_backend, _find_file
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-_backends_cache = {}
-
 class Filter(object):
     takes_input = True
 
     def __init__(self, **kwargs):
         self.file_filter = FileFilter
         self.config(kwargs, filetype=None, filter=None)
+
+        # We assume that if this is e.g. a 'js' backend then all input must
+        # also be 'js'. Subclasses must override this if they expect a special
+        # input file type. Also, subclasses have to check if their file type
+        # is supported.
+        self.input_filetype = self.filetype
+
         if self.takes_input:
             self.config(kwargs, input=())
             if not isinstance(self.input, (tuple, list)):
@@ -77,10 +77,10 @@ class Filter(object):
 
     def get_filter(self, config):
         backend_class = _load_backend(config.get('filter'))
-        return backend_class(filetype=self.filetype, **config)
+        return backend_class(filetype=self.input_filetype, **config)
 
     def get_item(self, name):
-        return self.file_filter(name=name, filetype=self.filetype)
+        return self.file_filter(name=name, filetype=self.input_filetype)
 
     def _get_variations_with_input(self):
         """Utility function to get variations including input variations"""
@@ -117,10 +117,7 @@ class FileFilter(Filter):
         path = _find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
         with open(path, 'r') as fp:
-            return self.convert(fp.read())
+            return fp.read()
 
     def get_dev_output_names(self, variation):
         yield self.name
-
-    def convert(self, content):
-        return content
