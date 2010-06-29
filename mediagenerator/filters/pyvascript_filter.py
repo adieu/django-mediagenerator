@@ -1,19 +1,16 @@
 from django.conf import settings
-from mediagenerator.base import Filter
-from subprocess import Popen, PIPE
+from mediagenerator.base import Filter, FileFilter
+from pyvascript.grammar import compile
 import os
 
-class YUICompressor(Filter):
+class PyvaScript(Filter):
     def __init__(self, **kwargs):
-        self.config(kwargs, separate_files=False)
-        if self.separate_files:
-            kwargs['input'] = [{'filter': 'mediagenerator.filters.concat.ConcatFilter',
-                                'input': kwargs.pop('input')}]
-        super(YUICompressor, self).__init__(**kwargs)
+        super(PyvaScript, self).__init__(**kwargs)
+        self.file_filter = PyvaScriptFileFilter
 
     def get_output(self, variation):
-        if self.filetype not in ('css', 'js'):
-            raise ValueError('YUICompressor only supports CSS and JS files')
+        if self.filetype != 'js':
+            raise ValueError('PyvaScript only supports JS output')
 
         for input in self.get_input(variation):
             try:
@@ -28,3 +25,10 @@ class YUICompressor(Filter):
                     "and that it's in your PATH and that you've configured "
                     "YUICOMPRESSOR_PATH in your settings correctly.\n"
                     "Error was: %r" % e)
+
+    def get_item(self, name):
+        return PyvaScriptFileFilter(name=name, filetype=self.filetype)
+
+class PyvaScriptFileFilter(FileFilter):
+    def convert(self, content):
+        return compile(content)

@@ -47,7 +47,7 @@ def generate_media():
                 generated_files[filetype][(name, ())] = generated
             else:
                 # Generate media files for all variation combinations
-                combinations = product(map(variations.__getitem__, sorted(variations.keys())))
+                combinations = product(variations[key] for key in sorted(variations.keys()))
                 for combination in combinations:
                     variation_map = zip(sorted(variations.keys()), combination)
                     variation = dict(variation_map)
@@ -74,11 +74,13 @@ def generate_media():
             os.makedirs(parent)
         shutil.copyfile(source, dst)
 
+    # Generate a module with versioning information
     with open('_generated_media_versions.py', 'w') as fp:
         fp.write('MEDIA_VERSIONS = %r\nCOPY_VERSIONS = %r'
                  % (generated_files, copied_files))
 
 def collect_copyable_files(media_files, root):
+    # TODO: create a backend/filters API for copyable and binary files
     for root_path, dirs, files in os.walk(root):
         for file in files:
             ext = os.path.splitext(file)[1].lstrip('.')

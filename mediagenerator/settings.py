@@ -1,4 +1,3 @@
-import os.path
 from django.conf import settings
 import os
 
@@ -12,3 +11,5 @@ GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS', ())
 
 COPY_MEDIA_FILETYPES = getattr(settings, 'COPY_MEDIA_FILETYPES',
     ('gif', 'jpg', 'jpeg', 'png', 'svg'))
+
+MEDIA_DEV_MODE = getattr(settings, 'MEDIA_DEV_MODE', settings.DEBUG)

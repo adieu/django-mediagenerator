@@ -11,10 +11,11 @@ class Filter(object):
     takes_input = True
 
     def __init__(self, **kwargs):
-        self.config(kwargs, filetype=None, backend=None)
+        self.config(kwargs, filetype=None, filter=None)
         if self.takes_input:
             self.config(kwargs, input=())
         self._input_filters = None
+        self.file_filter = FileFilter
         assert not kwargs, 'Unknown parameters: %s' % ', '.join(kwargs.keys())
 
     def get_variations(self):
@@ -36,9 +37,9 @@ class Filter(object):
         """
         Returns content for the given file name and variation in development mode.
         """
-        index, child = name.split('/', 1)[0]
+        index, child = name.split('/', 1)
         index = int(index)
-        filter = self.get_input_filters(variation)[index]
+        filter = self.get_input_filters()[index]
         return filter.get_dev_output(child, variation)
 
     def get_dev_output_names(self, variation):
@@ -46,7 +47,7 @@ class Filter(object):
         Yields file names for the given variation in development mode.
         """
         # By default we simply return our input filters' file names
-        for index, filter in enumerate(self.get_input_filters(variation)):
+        for index, filter in enumerate(self.get_input_filters()):
             for name in filter.get_dev_output_names(variation):
                 yield '%d/%s' % (index, name)
 
@@ -77,7 +78,7 @@ class Filter(object):
         return backend_class(filetype=self.filetype, **config)
 
     def get_item(self, name):
-        return FileFilter(name=name, filetype=self.filetype)
+        return self.file_filter(name=name, filetype=self.filetype)
 
     def _get_variations_with_input(self):
         """Utility function to get variations including input variations"""
@@ -99,9 +100,9 @@ class Filter(object):
             setattr(self, key, init.pop(key, defaults[key]))
 
 class FileFilter(Filter):
+    """A filter that just returns the given file."""
     takes_input = False
 
-    """A filter that just returns the given file."""
     def __init__(self, **kwargs):
         self.config(kwargs, name=None)
         super(FileFilter, self).__init__(**kwargs)
@@ -114,7 +115,10 @@ class FileFilter(Filter):
         path = _find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
         with open(path, 'r') as fp:
-            return fp.read()
+            return self.convert(fp.read())
 
     def get_dev_output_names(self, variation):
         yield self.name
+
+    def convert(self, content):
+        return content

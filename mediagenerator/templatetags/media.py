@@ -1,124 +1,62 @@
-import os
-
 from django import template
-
-from django.conf import settings as django_settings
-
-from compress.conf import settings
-from compress.utils import media_root, media_url, needs_update, filter_css, filter_js, get_output_filename, get_version, get_version_from_file
+from urllib import urlencode
+from ..settings import GENERATE_MEDIA, MEDIA_DEV_MODE, ROOT_MEDIA_FILTER
+from ..utils import _media_url, _load_root_filter
 
 register = template.Library()
 
-def render_common(template_name, obj, filename, version):
-    if settings.COMPRESS:
-        filename = get_output_filename(filename, version)
-
-    context = obj.get('extra_context', {})
-    prefix = context.get('prefix', None)
-    if filename.startswith('http://'):
-        context['url'] = filename
-    else:
-        context['url'] = media_url(filename, prefix)
-        
-    return template.loader.render_to_string(template_name, context)
-
-def render_css(css, filename, version=None):
-    return render_common(css.get('template_name', 'compress/css.html'), css, filename, version)
-
-def render_js(js, filename, version=None):
-    return render_common(js.get('template_name', 'compress/js.html'), js, filename, version)
-
-class CompressedCSSNode(template.Node):
-    def __init__(self, name):
-        self.name = name
+class MediaNode(template.Node):
+    def __init__(self, filetype, group, variation):
+        self.filetype = filetype
+        self.group = group
+        self.variation = variation
 
     def render(self, context):
-        css_name = template.Variable(self.name).resolve(context)
+        filetype = template.Variable(self.filetype).resolve(context)
+        group = template.Variable(self.group).resolve(context)
+        variation = {}
+        for key, value in self.variation.items():
+            variation[key] = template.Variable(value).resolve(context)
 
-        try:
-            css = settings.COMPRESS_CSS[css_name]
-        except KeyError:
-            return '' # fail silently, do not return anything if an invalid group is specified
-
-        if settings.COMPRESS:
-
-            version = None
-
-            if settings.COMPRESS_AUTO:
-                u, version = needs_update(css['output_filename'], 
-                    css['source_filenames'])
-                if u:
-                    filter_css(css)
-            else:
-                filename_base, filename = os.path.split(css['output_filename'])
-                path_name = media_root(filename_base)
-                version = get_version_from_file(path_name, filename)
-                
-            return render_css(css, css['output_filename'], version)
+        if MEDIA_DEV_MODE:
+            root = _load_root_filter(filetype, group)
+            variation_data = ''
+            if variation:
+                variation_data = '?%s' % urlencode(variation)
+            urls = ('%s/%s/%s%s' % (filetype, group, url, variation_data)
+                    for url in root.get_dev_output_names(variation))
         else:
-            # output source files
-            r = ''
-            for source_file in css['source_filenames']:
-                r += render_css(css, source_file)
+            from _generated_media_versions import MEDIA_VERSIONS, COPY_VERSIONS
+            variation_map = tuple((key, variation[key]) for key in variation)
+            urls = (MEDIA_VERSIONS[filetype][(group, variation_map)],)
 
-            return r
+        code = []
+        for url in urls:
+            url = _media_url(url)
+            code.append('<script type="text/javascript" src="%s"></script>' % url)
+        return '\n'.join(code)
 
-class CompressedJSNode(template.Node):
-    def __init__(self, name):
-        self.name = name
-
-    def render(self, context):
-        js_name = template.Variable(self.name).resolve(context)
-
-        try:
-            js = settings.COMPRESS_JS[js_name]
-        except KeyError:
-            return '' # fail silently, do not return anything if an invalid group is specified
-        
-        if 'external_urls' in js:
-            r = ''
-            for url in js['external_urls']:
-                r += render_js(js, url)
-            return r
-                    
-        if settings.COMPRESS:
-
-            version = None
-
-            if settings.COMPRESS_AUTO:
-                u, version = needs_update(js['output_filename'], 
-                    js['source_filenames'])
-                if u:
-                    filter_js(js)
-            else: 
-                filename_base, filename = os.path.split(js['output_filename'])
-                path_name = media_root(filename_base)
-                version = get_version_from_file(path_name, filename)
-
-            return render_js(js, js['output_filename'], version)
-        else:
-            # output source files
-            r = ''
-            for source_file in js['source_filenames']:
-                r += render_js(js, source_file)
-            return r
-
-#@register.tag
-def compressed_css(parser, token):
+@register.tag
+def include_media(parser, token):
     try:
-        tag_name, name = token.split_contents()
-    except ValueError:
-        raise template.TemplateSyntaxError, '%r requires exactly one argument: the name of a group in the COMPRESS_CSS setting' % token.split_contents()[0]
+        contents = token.split_contents()
+        filetype = contents[1]
+        group = contents[2]
+        variation_spec = contents[3:]
+        variation = {}
+        for item in variation_spec:
+            key, value = item.split('=')
+            variation[key] = value
+    except (ValueError, AssertionError, IndexError):
+        raise template.TemplateSyntaxError(
+            '%r could not parse the arguments: the first argument must be the '
+            'file type ("js" or "css"), the second argument must be the name '
+            'of a group in the GENERATE_MEDIA setting, and the following '
+            'arguments specify the media variation (if you have any) and must '
+            'be of the form key="value"' % contents[0])
 
-    return CompressedCSSNode(name)
-compressed_css = register.tag(compressed_css)
+    return MediaNode(filetype, group, variation)
 
-#@register.tag
-def compressed_js(parser, token):
-    try:
-        tag_name, name = token.split_contents()
-    except ValueError:
-        raise template.TemplateSyntaxError, '%r requires exactly one argument: the name of a group in the COMPRESS_JS setting' % token.split_contents()[0]
-
-    return CompressedJSNode(name)
-compressed_js = register.tag(compressed_js)
+@register.filter
+def media_url(url):
+    return _media_url(url)
