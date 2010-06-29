@@ -11,11 +11,13 @@ class Filter(object):
     takes_input = True
 
     def __init__(self, **kwargs):
+        self.file_filter = FileFilter
         self.config(kwargs, filetype=None, filter=None)
         if self.takes_input:
             self.config(kwargs, input=())
+            if not isinstance(self.input, (tuple, list)):
+                self.input = (self.input,)
         self._input_filters = None
-        self.file_filter = FileFilter
         assert not kwargs, 'Unknown parameters: %s' % ', '.join(kwargs.keys())
 
     def get_variations(self):

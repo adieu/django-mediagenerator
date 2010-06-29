@@ -10,7 +10,7 @@ import os
 import shutil
 
 def generate_file(backend, name, filetype, variation, combination=()):
-    print 'Generating %s' % name
+    print 'Generating %s.%s with variation %r' % (name, filetype, variation)
     output = list(backend.get_output(variation))
     if len(output) == 0:
         output = ('',)
