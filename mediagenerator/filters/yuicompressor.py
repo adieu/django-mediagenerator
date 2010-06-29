@@ -6,7 +6,7 @@ import os
 class YUICompressor(Filter):
     def __init__(self, **kwargs):
         self.config(kwargs, separate_files=False)
-        if self.separate_files:
+        if not self.separate_files:
             kwargs['input'] = [{'filter': 'mediagenerator.filters.concat.ConcatFilter',
                                 'input': kwargs.pop('input')}]
         super(YUICompressor, self).__init__(**kwargs)
@@ -18,9 +18,11 @@ class YUICompressor(Filter):
         for input in self.get_input(variation):
             try:
                 compressor = settings.YUICOMPRESSOR_PATH
-                cmd = Popen(['java', '-jar', compressor], stdin=PIPE, stdout=PIPE)
+                cmd = Popen(['java', '-jar', compressor,
+                             '--charset', 'utf-8', '--type', self.filetype],
+                            stdin=PIPE, stdout=PIPE)
                 output = cmd.communicate(input)[0]
-                assert cmd.wait() == 0
+                assert cmd.wait() == 0, 'Command returned bad result'
                 yield output.replace(os.linesep, '\n')
             except Exception, e:
                 raise ValueError("Failed to execute Java VM or yuicompressor. "

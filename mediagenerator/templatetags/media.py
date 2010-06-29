@@ -31,9 +31,15 @@ class MediaNode(template.Node):
             urls = (MEDIA_VERSIONS[filetype][(group, variation_map)],)
 
         code = []
+        if filetype == 'css':
+            tag = '<link rel="stylesheet" type="text/css" href="%s" />'
+        elif filetype == 'js':
+            tag = '<script type="text/javascript" src="%s"></script>'
+        else:
+            raise ValueError("""Don't know how to include file type "%s".""" % filetype)
         for url in urls:
             url = _media_url(url)
-            code.append('<script type="text/javascript" src="%s"></script>' % url)
+            code.append(tag % url)
         return '\n'.join(code)
 
 @register.tag
