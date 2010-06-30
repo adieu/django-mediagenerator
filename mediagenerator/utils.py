@@ -1,4 +1,3 @@
-import os.path
 from django.conf import settings
 from django.utils.importlib import import_module
 from .settings import GLOBAL_MEDIA_DIRS, ROOT_MEDIA_FILTER, GENERATE_MEDIA
