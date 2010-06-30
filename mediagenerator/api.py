@@ -16,10 +16,9 @@ def generate_file(backend, name, filetype, variation, combination=()):
     assert len(output) == 1, \
         'Media group "%s" would result in multiple output files' % name
     output = output[0]
-    hash = sha1()
-    hash.update(output)
 
-    combination += (hash.hexdigest(),)
+    hash = sha1(output).hexdigest()
+    combination += (hash,)
     filename = '%s-%s.%s' % (name, '-'.join(combination), filetype)
 
     path = os.path.join(GENERATE_MEDIA_DIR, filename)

@@ -1,3 +1,4 @@
+from hashlib import sha1
 from .utils import _load_backend, _find_file
 
 class Filter(object):
@@ -113,6 +114,7 @@ class FileFilter(Filter):
         yield self.get_dev_output(self.name, variation)
 
     def get_dev_output(self, name, variation):
+        name = name.split('/', 1)[-1]
         assert name == self.name, "File name doen't match the one in GENERATE_MEDIA"
         path = _find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
@@ -120,4 +122,6 @@ class FileFilter(Filter):
             return fp.read()
 
     def get_dev_output_names(self, variation):
-        yield self.name
+        output = self.get_dev_output('hash/%s' % self.name, variation)
+        hash = sha1(output).hexdigest()
+        yield '%s/%s' % (hash, self.name)

@@ -1,4 +1,5 @@
 from django.conf import settings
+from hashlib import sha1
 from mediagenerator.base import Filter
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 import os
@@ -60,7 +61,6 @@ class Pyjs(Filter):
             assert self.main_module, \
                 'You must provide a main module in only_dependencies mode'
 
-        self._visited = set()
         self._compiled = {}
         self._collected = {}
 
@@ -72,7 +72,7 @@ class Pyjs(Filter):
 
         if self.only_dependencies:
             self._regenerate(dev_mode=False)
-            for name in sorted(self._visited):
+            for name in sorted(self._compiled.keys()):
                 yield self._compiled[name][1]
         else:
             for name in sorted(self._collected.keys()):
@@ -83,6 +83,8 @@ class Pyjs(Filter):
 
     def get_dev_output(self, name, variation):
         self._collect_all_modules()
+        
+        name = name.split('/', 1)[-1]
 
         if name == '.init.js':
             return self._compile_init()
@@ -104,8 +106,8 @@ class Pyjs(Filter):
 
         if self.only_dependencies:
             self._regenerate(dev_mode=True)
-            for name in sorted(self._visited):
-                yield name
+            for name in sorted(self._compiled.keys()):
+                yield '%s/%s' % (self._compiled[name][2], name)
         else:
             for name in sorted(self._collected.keys()):
                 yield name
@@ -116,13 +118,12 @@ class Pyjs(Filter):
     def _regenerate(self, dev_mode=False):
         # This function is only called in only_dependencies mode
         if self._compiled:
-            for module_name, (mtime, content) in self._compiled.items():
+            for module_name, (mtime, content, hash) in self._compiled.items():
                 if module_name not in self._collected or \
                         os.path.getmtime(self._collected[module_name]) != mtime:
                     # Just recompile everything
                     # TODO: track dependencies and changes and recompile only
                     # what's necessary
-                    self._visited = set()
                     self._compiled = {}
                     break
             else:
@@ -140,8 +141,8 @@ class Pyjs(Filter):
                 source = fp.read()
             mtime = os.path.getmtime(path)
             content, py_deps, js_deps = self._compile(module_name, source, dev_mode=dev_mode)
-            self._visited.add(module_name)
-            self._compiled[module_name] = (mtime, content)
+            hash = sha1(content).hexdigest()
+            self._compiled[module_name] = (mtime, content, hash)
 
             for name in py_deps:
                 if name not in self._collected:
@@ -150,7 +151,7 @@ class Pyjs(Filter):
                     else:
                         raise ImportError('The pyjs module %s could not find '
                             'the dependency %s' % (module_name, name))
-                if name not in self._visited:
+                if name not in self._compiled:
                     modules.append(name)
 
     def _compile(self, name, source, dev_mode=False):
