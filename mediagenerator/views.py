@@ -1,11 +1,12 @@
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
+from django.views.decorators.cache import cache_control
 from mimetypes import guess_type
 
-from .settings import GENERATE_MEDIA, ROOT_MEDIA_FILTER
 from .utils import _load_root_filter
 
 _cache = {}
 
+@cache_control(private=True, max_age=60*60*24*365)
 def serve(request, filetype, group, path):
     mimetype = guess_type('x.' + filetype)[0]
 

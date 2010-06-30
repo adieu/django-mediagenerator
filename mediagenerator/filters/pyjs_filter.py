@@ -32,7 +32,7 @@ $pyjs.options.set_all = function (v) {
     $pyjs.options.arg_kwarg_multiple_values = v;
 };
 $pyjs.options.set_all(true);
-%pyjs.options.dynamic_loading = false;
+$pyjs.options.dynamic_loading = false;
 $pyjs.trackstack = [];
 $pyjs.track = {module:'__main__', lineno: 1};
 $pyjs.trackstack.push($pyjs.track);
