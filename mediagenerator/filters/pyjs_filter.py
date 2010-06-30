@@ -125,9 +125,9 @@ class Pyjs(Filter):
                     self._visited = set()
                     self._compiled = {}
                     break
-
-            # No changes
-            return
+            else:
+                # No changes
+                return
 
         modules = [self.main_module, 'pyjslib']
         while True:
