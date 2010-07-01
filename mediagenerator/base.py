@@ -1,5 +1,5 @@
 from hashlib import sha1
-from .utils import _load_backend, _find_file
+from .utils import _load_backend, find_file
 
 class Filter(object):
     takes_input = True
@@ -116,7 +116,7 @@ class FileFilter(Filter):
     def get_dev_output(self, name, variation):
         name = name.split('/', 1)[-1]
         assert name == self.name, "File name doen't match the one in GENERATE_MEDIA"
-        path = _find_file(name)
+        path = find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
         fp = open(path, 'r')
         output = fp.read()

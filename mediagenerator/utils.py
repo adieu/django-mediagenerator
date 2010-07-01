@@ -13,7 +13,7 @@ def _load_root_filter(filetype, group):
     backend_class = _load_backend(ROOT_MEDIA_FILTER)
     return backend_class(filetype=filetype, input=input)
 
-def _get_media_dirs():
+def get_media_dirs():
     media_dirs = []
     for root in GLOBAL_MEDIA_DIRS:
         root = os.path.abspath(root)
@@ -25,9 +25,9 @@ def _get_media_dirs():
             media_dirs.append(root)
     return media_dirs
 
-def _find_file(name):
+def find_file(name):
     name = name.replace(os.sep, '/')
-    for root in _get_media_dirs():
+    for root in get_media_dirs():
         for root_path, dirs, files in os.walk(root):
             for file in files:
                 path = os.path.join(root_path, file)

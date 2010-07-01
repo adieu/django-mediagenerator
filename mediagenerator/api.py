@@ -54,7 +54,7 @@ def generate_media():
                     generated_files[filetype][(name, variation_map)] = generated
 
     media_files = {}
-    for root in _get_media_dirs():
+    for root in get_media_dirs():
         collect_copyable_files(media_files, root)
 
     copied_files = {}
