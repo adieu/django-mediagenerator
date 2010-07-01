@@ -22,12 +22,9 @@ class MediaNode(template.Node):
             variation_data = ''
             if variation:
                 variation_data = '?%s' % urlencode(variation)
-            if MEDIA_DEV_MODE == 'combined':
-                urls = ('%s/%s%s' % (filetype, group, variation_data),)
-            else:
-                root = _load_root_filter(filetype, group)
-                urls = ('%s/%s/%s%s' % (filetype, group, url, variation_data)
-                        for url in root.get_dev_output_names(variation))
+            root = _load_root_filter(filetype, group)
+            urls = ('%s/%s/%s%s' % (filetype, group, url, variation_data)
+                    for url in root.get_dev_output_names(variation))
         else:
             from _generated_media_versions import MEDIA_VERSIONS, COPY_VERSIONS
             variation_map = tuple((key, variation[key]) for key in variation)

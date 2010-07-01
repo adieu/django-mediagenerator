@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.utils.importlib import import_module
 from hashlib import sha1
 from itertools import product
 from .settings import ROOT_MEDIA_FILTER, GENERATE_MEDIA, GENERATE_MEDIA_DIR, \
@@ -25,8 +23,9 @@ def generate_file(backend, name, filetype, variation, combination=()):
     parent = os.path.dirname(path)
     if not os.path.exists(parent):
         os.makedirs(parent)
-    with open(path, 'w') as fp:
-        fp.write(output)
+    fp = open(path, 'w')
+    fp.write(output)
+    fp.close()
     return filename
 
 def generate_media():
@@ -60,11 +59,12 @@ def generate_media():
 
     copied_files = {}
     for name, source in media_files.items():
-        hash = sha1()
-        with open(source, 'rb') as fp:
-            hash.update(fp.read())
+        fp = open(source, 'rb')
+        hash = sha1(fp.read()).hexdigest()
+        fp.close()
+
         base, ext = os.path.splitext(name)
-        filename = '%s-%s%s' % (base, hash.hexdigest(), ext)
+        filename = '%s-%s%s' % (base, hash, ext)
         dst = os.path.join(GENERATE_MEDIA_DIR, filename)
         copied_files[name] = filename
         parent = os.path.dirname(dst)
@@ -73,9 +73,10 @@ def generate_media():
         shutil.copyfile(source, dst)
 
     # Generate a module with versioning information
-    with open('_generated_media_versions.py', 'w') as fp:
-        fp.write('MEDIA_VERSIONS = %r\nCOPY_VERSIONS = %r'
-                 % (generated_files, copied_files))
+    fp = open('_generated_media_versions.py', 'w')
+    fp.write('MEDIA_VERSIONS = %r\nCOPY_VERSIONS = %r'
+             % (generated_files, copied_files))
+    fp.close()
 
 def collect_copyable_files(media_files, root):
     # TODO: create a backend/filters API for copyable and binary files

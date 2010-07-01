@@ -23,15 +23,13 @@ $pyjs.__modules__ = {};
 $pyjs.modules_hash = {};
 $pyjs.loaded_modules = {};
 $pyjs.options = new Object();
-$pyjs.options.set_all = function (v) {
-    $pyjs.options.arg_ignore = v;
-    $pyjs.options.arg_count = v;
-    $pyjs.options.arg_is_instance = v;
-    $pyjs.options.arg_instance_type = v;
-    $pyjs.options.arg_kwarg_dup = v;
-    $pyjs.options.arg_kwarg_unexpected_keyword = v;
-    $pyjs.options.arg_kwarg_multiple_values = v;
-};
+$pyjs.options.arg_ignore = true;
+$pyjs.options.arg_count = true;
+$pyjs.options.arg_is_instance = true;
+$pyjs.options.arg_instance_type = true;
+$pyjs.options.arg_kwarg_dup = true;
+$pyjs.options.arg_kwarg_unexpected_keyword = true;
+$pyjs.options.arg_kwarg_multiple_values = true;
 $pyjs.options.set_all(true);
 $pyjs.options.dynamic_loading = false;
 $pyjs.trackstack = [];
@@ -39,23 +37,24 @@ $pyjs.track = {module:'__main__', lineno: 1};
 $pyjs.trackstack.push($pyjs.track);
 $pyjs.__last_exception_stack__ = null;
 $pyjs.__last_exception__ = null;
-"""
+""".lstrip()
 
 class Pyjs(Filter):
     takes_input = False
 
     def __init__(self, **kwargs):
         self.config(kwargs, exclude_main_libs=False, main_module=None,
-                    debug=None, path=(), only_dependencies=True)
+                    debug=None, path=(), only_dependencies=None)
         if isinstance(self.path, basestring):
             self.path = (self.path,)
+        if self.only_dependencies is None:
+            self.only_dependencies = bool(self.main_module)
         if self.only_dependencies:
             self.path += (STDLIB_PATH, BUILTIN_PATH, EXTRA_LIBS_PATH)
         super(Pyjs, self).__init__(**kwargs)
         assert self.filetype == 'js', (
             'Pyjs only supports compilation to js. '
             'The parent filter expects "%s".' % self.filetype)
-        self.input_filetype = 'pyjs'
 
         if self.only_dependencies:
             assert self.main_module, \
@@ -76,8 +75,10 @@ class Pyjs(Filter):
                 yield self._compiled[name][1]
         else:
             for name in sorted(self._collected.keys()):
-                with open(self._collected[name], 'r') as fp:
-                    yield self._compile(name, fp.read(), dev_mode=False)[0]
+                fp = open(self._collected[name], 'r')
+                output = self._compile(name, fp.read(), dev_mode=False)[0]
+                fp.close()
+                yield output
 
         yield self._compile_main()
 
@@ -95,8 +96,10 @@ class Pyjs(Filter):
             self._regenerate(dev_mode=True)
             return self._compiled[name][1]
         else:
-            with open(self._collected[name], 'r') as fp:
-                return self._compile(name, fp.read(), dev_mode=True)[0]
+            fp = open(self._collected[name], 'r')
+            output = self._compile(name, fp.read(), dev_mode=True)[0]
+            fp.close()
+            return output
 
     def get_dev_output_names(self, variation):
         self._collect_all_modules()
@@ -137,9 +140,12 @@ class Pyjs(Filter):
 
             module_name = modules.pop()
             path = self._collected[module_name]
-            with open(path, 'r') as fp:
-                source = fp.read()
             mtime = os.path.getmtime(path)
+
+            fp = open(path, 'r')
+            source = fp.read()
+            fp.close()
+
             content, py_deps, js_deps = self._compile(module_name, source, dev_mode=dev_mode)
             hash = sha1(content).hexdigest()
             self._compiled[module_name] = (mtime, content, hash)
@@ -168,8 +174,10 @@ class Pyjs(Filter):
         return output.getvalue(), translator.imported_modules, translator.imported_js
 
     def _compile_init(self):
-        with open(PYJS_INIT_LIB_PATH, 'r') as fp:
-            return INIT_CODE + fp.read()
+        fp = open(PYJS_INIT_LIB_PATH, 'r')
+        content = fp.read()
+        fp.close()
+        return INIT_CODE + content
 
     def _compile_main(self):
         content = ''

@@ -118,8 +118,10 @@ class FileFilter(Filter):
         assert name == self.name, "File name doen't match the one in GENERATE_MEDIA"
         path = _find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
-        with open(path, 'r') as fp:
-            return fp.read()
+        fp = open(path, 'r')
+        output = fp.read()
+        fp.close()
+        return output
 
     def get_dev_output_names(self, variation):
         output = self.get_dev_output('hash/%s' % self.name, variation)
