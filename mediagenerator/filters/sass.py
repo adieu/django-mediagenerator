@@ -1,7 +1,6 @@
 from mediagenerator.base import Filter
 from mediagenerator.utils import get_media_dirs
 from subprocess import Popen, PIPE
-import os
 
 class Sass(Filter):
     def __init__(self, **kwargs):
@@ -30,10 +29,8 @@ class Sass(Filter):
 
     def _compile(self, input):
         cmd = Popen(['sass', '-C', '-t', 'expanded', '-E', 'utf-8']
-                    + self.path_args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        import logging
-        logging.info(cmd.stdout.read())
-        logging.info(cmd.stderr.read())
-        output = cmd.communicate(input)[0]
-        assert cmd.wait() == 0, 'Command returned bad result'
-        return output.replace(os.linesep, '\n')
+                    + self.path_args, shell=True, universal_newlines=True,
+                    stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output, error = cmd.communicate(input)
+        assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
+        return output

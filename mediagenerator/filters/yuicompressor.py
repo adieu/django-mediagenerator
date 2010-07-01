@@ -1,7 +1,6 @@
 from django.conf import settings
 from mediagenerator.base import Filter
 from subprocess import Popen, PIPE
-import os
 
 class YUICompressor(Filter):
     def __init__(self, **kwargs):
@@ -20,13 +19,14 @@ class YUICompressor(Filter):
                 compressor = settings.YUICOMPRESSOR_PATH
                 cmd = Popen(['java', '-jar', compressor,
                              '--charset', 'utf-8', '--type', self.filetype],
-                            stdin=PIPE, stdout=PIPE)
-                output = cmd.communicate(input)[0]
-                assert cmd.wait() == 0, 'Command returned bad result'
-                yield output.replace(os.linesep, '\n')
+                            stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                            universal_newlines=True)
+                output, error = cmd.communicate(input)
+                assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
+                yield output
             except Exception, e:
                 raise ValueError("Failed to execute Java VM or yuicompressor. "
                     "Please make sure that you have installed Java "
                     "and that it's in your PATH and that you've configured "
                     "YUICOMPRESSOR_PATH in your settings correctly.\n"
-                    "Error was: %r" % e)
+                    "Error was: %s" % e)

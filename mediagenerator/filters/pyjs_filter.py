@@ -30,7 +30,6 @@ $pyjs.options.arg_instance_type = true;
 $pyjs.options.arg_kwarg_dup = true;
 $pyjs.options.arg_kwarg_unexpected_keyword = true;
 $pyjs.options.arg_kwarg_multiple_values = true;
-$pyjs.options.set_all(true);
 $pyjs.options.dynamic_loading = false;
 $pyjs.trackstack = [];
 $pyjs.track = {module:'__main__', lineno: 1};
