@@ -9,6 +9,18 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+# Register PYVA() function
+try:
+    from pyvascript.grammar import compile
+    from pyjs.translator import native_js_func
+
+    @native_js_func
+    def PYVA(content):
+        return compile(content)
+except ImportError:
+    # No PyvaScript installed
+    pass
+
 PYJS_INIT_LIB_PATH = os.path.join(LIBRARY_PATH, 'builtin', 'public', '_pyjs.js')
 BUILTIN_PATH = os.path.join(LIBRARY_PATH, 'builtin')
 STDLIB_PATH = os.path.join(LIBRARY_PATH, 'lib')
