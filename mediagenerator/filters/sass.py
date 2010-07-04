@@ -2,6 +2,8 @@ from mediagenerator.base import Filter
 from mediagenerator.utils import get_media_dirs
 from subprocess import Popen, PIPE
 
+# TODO: also keep track of included files' changes
+
 class Sass(Filter):
     def __init__(self, **kwargs):
         self.config(kwargs, path=())
@@ -18,6 +20,11 @@ class Sass(Filter):
         self.path_args = []
         for path in self.path:
             self.path_args.extend(('-I', path))
+
+    def should_use_default_filter(self, ext):
+        if ext == 'sass':
+            return False
+        return super(PyvaScript, self).should_use_default_filter(ext)
 
     def get_output(self, variation):
         for input in self.get_input(variation):

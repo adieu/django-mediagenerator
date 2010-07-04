@@ -1,11 +1,27 @@
 from django.conf import settings
 import os
 
-ROOT_MEDIA_FILTER = getattr(settings, 'ROOT_MEDIA_FILTER', 'mediagenerator.filters.concat.ConcatFilter')
+DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
+    'sass': 'mediagenerator.filters.sass.Sass',
+    'py': 'mediagenerator.filters.pyjs_filter.Pyjs',
+    'pyva': 'mediagenerator.filters.pyvascript_filter.PyvaScript',
+})
 
-GENERATE_MEDIA = getattr(settings, 'GENERATE_MEDIA', {})
+DEFAULT_ROOT_MEDIA_FILTER = getattr(settings, 'DEFAULT_ROOT_MEDIA_FILTER',
+    'mediagenerator.filters.concat.Concat')
 
-GENERATE_MEDIA_DIR = os.path.abspath(getattr(settings, 'GENERATE_MEDIA_DIR', '_generated_media'))
+ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS', {})
+
+MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
+    'mediagenerator.generators.sprites.Sprites',
+    'mediagenerator.generators.groups.Groups',
+    'mediagenerator.generators.copyfiles.CopyFiles',
+))
+
+MEDIA_GROUPS = getattr(settings, 'MEDIA_GROUPS', {})
+
+GENERATED_MEDIA_DIR = os.path.abspath(getattr(settings, 'GENERATE_MEDIA_DIR',
+    '_generated_media'))
 
 GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS', ())
 

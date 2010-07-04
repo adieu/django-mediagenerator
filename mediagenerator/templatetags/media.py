@@ -1,6 +1,6 @@
 from django import template
 from urllib import urlencode
-from ..settings import GENERATE_MEDIA, MEDIA_DEV_MODE, ROOT_MEDIA_FILTER
+from ..settings import MEDIA_DEV_MODE
 from ..utils import _media_url, _load_root_filter
 
 register = template.Library()
@@ -57,7 +57,7 @@ def include_media(parser, token):
         raise template.TemplateSyntaxError(
             '%r could not parse the arguments: the first argument must be the '
             'file type ("js" or "css"), the second argument must be the name '
-            'of a group in the GENERATE_MEDIA setting, and the following '
+            'of a group in the MEDIA_GROUPS setting, and the following '
             'arguments specify the media variation (if you have any) and must '
             'be of the form key="value"' % contents[0])
 

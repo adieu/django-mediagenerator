@@ -1,6 +1,6 @@
-from django.conf import settings
 from hashlib import sha1
 from mediagenerator.base import Filter
+from mediagenerator.utils import find_file
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 import os
 
@@ -73,6 +73,12 @@ class Pyjs(Filter):
 
         self._compiled = {}
         self._collected = {}
+
+    @classmethod
+    def from_default(cls, name):
+        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
+                'main_module': name.rsplit('.', 1)[0],
+                'path': os.path.dirname(find_file(name))}
 
     def get_output(self, variation):
         self._collect_all_modules()

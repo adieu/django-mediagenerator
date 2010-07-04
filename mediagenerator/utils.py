@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.importlib import import_module
-from .settings import GLOBAL_MEDIA_DIRS, ROOT_MEDIA_FILTER, GENERATE_MEDIA
+from .settings import GLOBAL_MEDIA_DIRS, DEFAULT_ROOT_MEDIA_FILTER, \
+    ROOT_MEDIA_FILTERS, MEDIA_GROUPS
 import os
 
 _backends_cache = {}
@@ -9,8 +10,9 @@ def _media_url(url):
     return settings.MEDIA_URL + url
 
 def _load_root_filter(filetype, group):
-    input = GENERATE_MEDIA[filetype][group]
-    backend_class = _load_backend(ROOT_MEDIA_FILTER)
+    input = MEDIA_GROUPS[filetype][group]
+    root_filter = ROOT_MEDIA_FILTERS.get(filetype, DEFAULT_ROOT_MEDIA_FILTER)
+    backend_class = _load_backend(root_filter)
     return backend_class(filetype=filetype, input=input)
 
 def get_media_dirs():

@@ -1,12 +1,14 @@
 from hashlib import sha1
+from .settings import DEFAULT_MEDIA_FILTERS
 from .utils import _load_backend, find_file
+import os
 
 class Filter(object):
     takes_input = True
 
     def __init__(self, **kwargs):
         self.file_filter = FileFilter
-        self.config(kwargs, filetype=None, filter=None)
+        self.config(kwargs, filetype=None, filter=None, _from_default=None)
 
         # We assume that if this is e.g. a 'js' backend then all input must
         # also be 'js'. Subclasses must override this if they expect a special
@@ -20,6 +22,14 @@ class Filter(object):
                 self.input = (self.input,)
         self._input_filters = None
         assert not kwargs, 'Unknown parameters: %s' % ', '.join(kwargs.keys())
+
+    @classmethod
+    def from_default(cls, name):
+        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
+                'input': name}
+
+    def should_use_default_filter(self, ext):
+        return ext != self._from_default
 
     def get_variations(self):
         """
@@ -81,6 +91,15 @@ class Filter(object):
         return backend_class(filetype=self.input_filetype, **config)
 
     def get_item(self, name):
+        ext = os.path.splitext(name)[1].lstrip('.')
+        if ext in DEFAULT_MEDIA_FILTERS and self.should_use_default_filter(ext):
+            backend_class = _load_backend(DEFAULT_MEDIA_FILTERS[ext])
+            config = backend_class.from_default(name)
+            # This is added to make really sure we don't instantiate the same
+            # filter in an endless loop. Normally, the child class should
+            # take care of this in should_use_default_filter().
+            config['_from_default'] = ext
+            return backend_class(filetype=self.input_filetype, **config)
         return self.file_filter(name=name, filetype=self.input_filetype)
 
     def _get_variations_with_input(self):

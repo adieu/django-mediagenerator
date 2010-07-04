@@ -1,6 +1,6 @@
 from mediagenerator.base import Filter
 
-class ConcatFilter(Filter):
+class Concat(Filter):
     """
     Simply concatenates multiple files into a single file.
 
