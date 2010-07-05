@@ -11,4 +11,4 @@ DEFAULT_ROOT_MEDIA_FILTER = getattr(settings, 'DEFAULT_ROOT_MEDIA_FILTER',
 
 ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS', {})
 
-MEDIA_GROUPS = getattr(settings, 'MEDIA_GROUPS', {})
+MEDIA_GROUPS = getattr(settings, 'MEDIA_GROUPS', ())
