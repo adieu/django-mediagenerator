@@ -1,5 +1,5 @@
 from django.conf import settings
-from mediagenerator.base import Filter
+from mediagenerator.generators.groups.base import Filter
 from subprocess import Popen, PIPE
 
 class YUICompressor(Filter):

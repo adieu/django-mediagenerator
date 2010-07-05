@@ -1,7 +1,10 @@
-from django import template
-from urllib import urlencode
 from ..settings import MEDIA_DEV_MODE
-from ..utils import _media_url, _load_root_filter
+from ..utils import _refresh_dev_names, _generated_names
+from .. import utils
+
+from django import template
+from django.conf import settings
+from mediagenerator.generators.groups.utils import _load_root_filter, _get_key
 
 register = template.Library()
 
@@ -19,16 +22,16 @@ class MediaNode(template.Node):
             variation[key] = template.Variable(value).resolve(context)
 
         if MEDIA_DEV_MODE:
-            variation_data = ''
-            if variation:
-                variation_data = '?%s' % urlencode(variation)
             root = _load_root_filter(filetype, group)
-            urls = ('%s/%s/%s%s' % (filetype, group, url, variation_data)
-                    for url in root.get_dev_output_names(variation))
+            variations = root._get_variations_with_input()
+            variation_map = [(key, variation[key])
+                             for key in sorted(variations.keys())]
+            _refresh_dev_names()
+            group_key = _get_key(filetype, group, variation_map)
+            urls = [settings.MEDIA_URL + key for key in _generated_names[group_key]]
         else:
-            from _generated_media_versions import MEDIA_VERSIONS, COPY_VERSIONS
-            variation_map = tuple((key, variation[key]) for key in variation)
-            urls = (MEDIA_VERSIONS[filetype][(group, variation_map)],)
+            variation_map = tuple((key, variation[key]) for key in sorted(variation.keys()))
+            urls = (utils.media_url(_get_key(filetype, group, variation_map)),)
 
         code = []
         if filetype == 'css':
@@ -38,7 +41,6 @@ class MediaNode(template.Node):
         else:
             raise ValueError("""Don't know how to include file type "%s".""" % filetype)
         for url in urls:
-            url = _media_url(url)
             code.append(tag % url)
         return '\n'.join(code)
 
@@ -65,4 +67,4 @@ def include_media(parser, token):
 
 @register.filter
 def media_url(url):
-    return _media_url(url)
+    return utils.media_url(url)

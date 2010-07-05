@@ -1,19 +1,47 @@
 from django.conf import settings
 from django.utils.importlib import import_module
-from .settings import GLOBAL_MEDIA_DIRS, DEFAULT_ROOT_MEDIA_FILTER, \
-    ROOT_MEDIA_FILTERS, MEDIA_GROUPS
+from .settings import GLOBAL_MEDIA_DIRS, MEDIA_DEV_MODE, \
+    PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
 import os
+
+try:
+    from _generated_media_names import NAMES
+except ImportError:
+    NAMES = {}
 
 _backends_cache = {}
 
-def _media_url(url):
-    return settings.MEDIA_URL + url
+_generators_cache = []
+_generated_names = {}
+_backend_mapping = {}
 
-def _load_root_filter(filetype, group):
-    input = MEDIA_GROUPS[filetype][group]
-    root_filter = ROOT_MEDIA_FILTERS.get(filetype, DEFAULT_ROOT_MEDIA_FILTER)
-    backend_class = _load_backend(root_filter)
-    return backend_class(filetype=filetype, input=input)
+def _load_generators():
+    if not _generators_cache:
+        for name in MEDIA_GENERATORS:
+            backend = load_backend(name)()
+            _generators_cache.append(backend)
+    return _generators_cache
+
+def _refresh_dev_names():
+    _generated_names.clear()
+    _backend_mapping.clear()
+    for backend in _load_generators():
+        for key, url, hash in backend.get_dev_output_names():
+            versioned_url = url
+            if hash:
+                versioned_url += '?version=' + hash
+            _generated_names.setdefault(key, [])
+            _generated_names[key].append(versioned_url)
+            _backend_mapping[url] = backend
+
+def media_url(key, dev_mode=MEDIA_DEV_MODE):
+    if dev_mode:
+        _refresh_dev_names()
+        urls = [settings.MEDIA_URL + url for url in _generated_names[key]]
+        if len(urls) == 1:
+            return urls[0]
+        return urls
+    return PRODUCTION_MEDIA_URL + NAMES[key]
 
 def get_media_dirs():
     media_dirs = []
@@ -37,7 +65,7 @@ def find_file(name):
                 if media_path == name:
                     return path
 
-def _load_backend(backend, default_backend=None):
+def load_backend(backend, default_backend=None):
     if backend is None:
         if default_backend is None:
             raise ValueError('No backend provided')

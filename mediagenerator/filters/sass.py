@@ -1,4 +1,4 @@
-from mediagenerator.base import Filter
+from mediagenerator.generators.groups.base import Filter
 from mediagenerator.utils import get_media_dirs
 from subprocess import Popen, PIPE
 

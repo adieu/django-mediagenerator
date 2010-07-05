@@ -7,7 +7,7 @@ urlpatterns = patterns('')
 
 if MEDIA_DEV_MODE:
     urlpatterns += patterns('',
-        (r'^%s(?P<filetype>[^/]+)/(?P<group>[^/]+)/(?P<path>.+)$'
+        (r'^%s(?P<filename>.+)$'
             % re.escape(settings.MEDIA_URL.lstrip('/')),
          'mediagenerator.views.serve_dev_mode'),
     )

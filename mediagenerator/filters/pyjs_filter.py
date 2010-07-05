@@ -1,5 +1,5 @@
 from hashlib import sha1
-from mediagenerator.base import Filter
+from mediagenerator.generators.groups.base import Filter
 from mediagenerator.utils import find_file
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 import os
@@ -122,18 +122,18 @@ class Pyjs(Filter):
         self._collect_all_modules()
 
         if not self.exclude_main_libs:
-            yield '.init.js'
+            yield '.init.js', None
 
         if self.only_dependencies:
             self._regenerate(dev_mode=True)
             for name in sorted(self._compiled.keys()):
-                yield '%s/%s' % (self._compiled[name][2], name)
+                yield name, self._compiled[name][2]
         else:
             for name in sorted(self._collected.keys()):
-                yield name
+                yield name, None
 
         if self.main_module is not None or not self.exclude_main_libs:
-            yield '.main.js'
+            yield '.main.js', None
 
     def _regenerate(self, dev_mode=False):
         # This function is only called in only_dependencies mode

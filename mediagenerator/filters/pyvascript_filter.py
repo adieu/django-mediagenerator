@@ -1,4 +1,4 @@
-from mediagenerator.base import Filter
+from mediagenerator.generators.groups.base import Filter
 from pyvascript.grammar import compile
 
 class PyvaScript(Filter):
