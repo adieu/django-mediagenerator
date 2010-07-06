@@ -1,5 +1,6 @@
 from .settings import GENERATED_MEDIA_DIR, MEDIA_GENERATORS
 from .utils import load_backend, _generated_names
+from . import settings as media_settings
 from hashlib import sha1
 import os
 import shutil
@@ -7,6 +8,10 @@ import shutil
 def generate_media():
     if os.path.exists(GENERATED_MEDIA_DIR):
         shutil.rmtree(GENERATED_MEDIA_DIR)
+
+    # This will make media_url() generate production URLs
+    was_dev_mode = media_settings.MEDIA_DEV_MODE
+    media_settings.MEDIA_DEV_MODE = False
 
     for backend_name in MEDIA_GENERATORS:
         backend = load_backend(backend_name)()
@@ -25,6 +30,8 @@ def generate_media():
             fp.close()
 
             _generated_names[key] = url
+
+    media_settings.MEDIA_DEV_MODE = was_dev_mode
 
     # Generate a module with media file name mappings
     fp = open('_generated_media_names.py', 'w')

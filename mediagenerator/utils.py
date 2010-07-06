@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.importlib import import_module
-from .settings import GLOBAL_MEDIA_DIRS, MEDIA_DEV_MODE, \
-    PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
+from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
+from . import settings as media_settings
 import os
 
 try:
@@ -34,8 +34,8 @@ def _refresh_dev_names():
             _generated_names[key].append(versioned_url)
             _backend_mapping[url] = backend
 
-def media_url(key, dev_mode=MEDIA_DEV_MODE):
-    if dev_mode:
+def media_url(key):
+    if media_settings.MEDIA_DEV_MODE:
         _refresh_dev_names()
         urls = [settings.MEDIA_URL + url for url in _generated_names[key]]
         if len(urls) == 1:
