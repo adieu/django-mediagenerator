@@ -1,0 +1,71 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load media %}
+<html xmlns="http://www.w3.org/1999/xhtml"
+    dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
+    xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
+    lang="{% firstof LANGUAGE_CODE 'en' %}">
+  <head>
+    <title>{% if request.path != '/' %}{% block title %}{% endblock %} - {% endif %}Media generator sample project</title>
+    {% block css %}
+      {% include_media 'main.css' %}
+    {% endblock %}
+
+    {% block preload_js %}
+    {% endblock %}
+
+    {% block extra-head %}{% endblock %}
+  </head>
+
+  <body>
+    <div id="header">
+      <a id="logo" href="/">Media generator base project</a>
+    </div>
+
+    <div class="columns">
+      <div id="content" class="column">
+        {% block content-header %}
+          {% if error %}<div class="error">{{ error }}</div>{% endif %}
+          {% if info %}<div class="info">{{ info }}</div>{% endif %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="info">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+      </div>
+
+      <div id="sidebar" class="column">
+        {% block sidebar %}
+        {% endblock %}
+      </div>
+    </div>
+
+    <div id="footer">
+      <p>
+        Powered by <a href="http://www.allbuttonspressed.com/projects/django-mediagenerator">django-mediagenerator</a>
+      </p>
+    </div>
+
+    {% block js %}
+    {% endblock %}
+
+    {% if google_analytics_id %}
+      <script type="text/javascript">
+      /* <![CDATA[ */
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      /* ]]> */
+      </script>
+      <script type="text/javascript">
+      /* <![CDATA[ */try {
+      var pageTracker = _gat._getTracker("{{ google_analytics_id|escapejs }}");
+      pageTracker._trackPageview();
+      } catch(err) {}/* ]]> */</script>
+
+    {% endif %}
+  </body>
+</html>

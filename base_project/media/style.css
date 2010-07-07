@@ -1,0 +1,27 @@
+#header {
+  margin-bottom: 20px;
+}
+
+#footer {
+  margin-top: 20px;
+}
+
+.highlight {
+  margin-bottom: 18px;
+}
+
+#header, #footer {
+  font-size: 11px;
+}
+
+body {
+  color: #36393D;
+}
+
+a {
+  color: #1985B5;
+}
+
+a:hover {
+  text-decoration: underline;
+}

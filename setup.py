@@ -1,5 +1,4 @@
 from setuptools import setup
-import os
 
 DESCRIPTION = 'Extensible JavaScript/CSS combiner and compressor'
 
@@ -10,6 +9,7 @@ except:
     pass
 
 setup(name='django-mediagenerator',
+      version='0.5',
       packages=['mediagenerator'],
       author='Waldemar Kornewald',
       url='http://www.allbuttonspressed.com/projects/django-mediagenerator',
@@ -17,5 +17,4 @@ setup(name='django-mediagenerator',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       platforms=['any'],
-      install_requires=[],
 )
