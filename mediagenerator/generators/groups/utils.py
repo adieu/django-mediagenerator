@@ -1,4 +1,5 @@
-from .settings import DEFAULT_ROOT_MEDIA_FILTER, ROOT_MEDIA_FILTERS, MEDIA_GROUPS
+from .settings import DEFAULT_ROOT_MEDIA_FILTER, ROOT_MEDIA_FILTERS, \
+    MEDIA_GROUPS
 from mediagenerator.utils import load_backend
 import os
 
@@ -6,7 +7,7 @@ _cache = {}
 
 def _load_root_filter(group):
     if group not in _cache:
-         _cache[group] = _load_root_filter_uncached(group)
+        _cache[group] = _load_root_filter_uncached(group)
     return _cache[group]
 
 def _load_root_filter_uncached(group):

@@ -1,7 +1,7 @@
+from . import settings as media_settings
+from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
 from django.conf import settings
 from django.utils.importlib import import_module
-from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
-from . import settings as media_settings
 import os
 
 try:

@@ -1,9 +1,8 @@
-from mediagenerator.base import Generator
-
-from itertools import product
-from mimetypes import guess_type
 from .settings import MEDIA_GROUPS
 from .utils import _load_root_filter, _get_key
+from itertools import product
+from mediagenerator.base import Generator
+from mimetypes import guess_type
 import os
 
 class Groups(Generator):

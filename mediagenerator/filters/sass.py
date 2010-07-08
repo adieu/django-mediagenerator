@@ -24,7 +24,7 @@ class Sass(Filter):
     def should_use_default_filter(self, ext):
         if ext == 'sass':
             return False
-        return super(PyvaScript, self).should_use_default_filter(ext)
+        return super(Sass, self).should_use_default_filter(ext)
 
     def get_output(self, variation):
         for input in self.get_input(variation):

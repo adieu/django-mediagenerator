@@ -1,6 +1,6 @@
+from .settings import MEDIA_DEV_MODE
 from django.conf import settings
 from django.conf.urls.defaults import *
-from .settings import MEDIA_DEV_MODE
 import re
 
 urlpatterns = patterns('')

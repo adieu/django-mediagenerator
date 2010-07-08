@@ -1,7 +1,6 @@
+from .. import utils
 from ..settings import MEDIA_DEV_MODE
 from ..utils import _refresh_dev_names, _generated_names
-from .. import utils
-
 from django import template
 from django.conf import settings
 from mediagenerator.generators.groups.utils import _load_root_filter, _get_key
