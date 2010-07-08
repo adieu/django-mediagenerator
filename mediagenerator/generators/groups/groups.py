@@ -1,6 +1,9 @@
 from .settings import MEDIA_GROUPS
 from .utils import _load_root_filter, _get_key
-from itertools import product
+try:
+    from itertools import product
+except ImportError:
+    from django.utils.itercompat import product
 from mediagenerator.base import Generator
 from mimetypes import guess_type
 import os
