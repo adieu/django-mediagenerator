@@ -1,4 +1,9 @@
+from hashlib import sha1
+
 class Generator(object):
+    def generate_version(self, key, url, content):
+        return sha1(content).hexdigest()
+
     def get_output(self):
         """
         Generates content for production mode.

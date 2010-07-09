@@ -1,7 +1,6 @@
 from . import settings as media_settings
 from .settings import GENERATED_MEDIA_DIR, MEDIA_GENERATORS
 from .utils import load_backend, NAMES
-from hashlib import sha1
 import os
 import shutil
 
@@ -18,9 +17,10 @@ def generate_media():
     for backend_name in MEDIA_GENERATORS:
         backend = load_backend(backend_name)()
         for key, url, content in backend.get_output():
-            hash = sha1(content).hexdigest()
-            base, ext = os.path.splitext(url)
-            url = '%s-%s%s' % (base, hash, ext)
+            version = backend.generate_version(key, url, content)
+            if version:
+                base, ext = os.path.splitext(url)
+                url = '%s-%s%s' % (base, version, ext)
 
             path = os.path.join(GENERATED_MEDIA_DIR, url)
             parent = os.path.dirname(path)
