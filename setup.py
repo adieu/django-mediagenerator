@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 DESCRIPTION = 'Extensible JavaScript/CSS combiner and compressor'
 
@@ -10,10 +10,10 @@ except:
 
 setup(name='django-mediagenerator',
       version='0.5',
-      packages=['mediagenerator'],
+      packages=find_packages(exclude=('tests', 'tests.*',
+                                      'base_project', 'base_project.*')),
       author='Waldemar Kornewald',
       url='http://www.allbuttonspressed.com/projects/django-mediagenerator',
-      include_package_data=True,
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       platforms=['any'],
