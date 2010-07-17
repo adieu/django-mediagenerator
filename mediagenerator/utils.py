@@ -1,5 +1,6 @@
 from . import settings as media_settings
-from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, MEDIA_GENERATORS
+from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
+    IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS
 from django.conf import settings
 from django.utils.importlib import import_module
 import os
@@ -50,6 +51,8 @@ def get_media_dirs():
         if os.path.isdir(root):
             media_dirs.append(root)
     for app in settings.INSTALLED_APPS:
+        if app in IGNORE_APP_MEDIA_DIRS:
+            continue
         root = os.path.join(os.path.dirname(import_module(app).__file__), 'media')
         if os.path.isdir(root):
             media_dirs.append(root)
