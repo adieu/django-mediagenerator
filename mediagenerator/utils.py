@@ -2,6 +2,7 @@ from . import settings as media_settings
 from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
     IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 import os
 
@@ -68,12 +69,19 @@ def find_file(name):
                 if media_path == name:
                     return path
 
-def load_backend(backend, default_backend=None):
-    if backend is None:
-        if default_backend is None:
-            raise ValueError('No backend provided')
-        backend = default_backend
+def load_backend(backend):
     if backend not in _backends_cache:
         module_name, func_name = backend.rsplit('.', 1)
-        _backends_cache[backend] = getattr(import_module(module_name), func_name)
+        _backends_cache[backend] = _load_backend(backend)
     return _backends_cache[backend]
+
+def _load_backend(path):
+    module_name, attr_name = path.rsplit('.', 1)
+    try:
+        mod = import_module(module_name)
+    except (ImportError, ValueError), e:
+        raise ImproperlyConfigured('Error importing backend module %s: "%s"' % (module_name, e))
+    try:
+        return getattr(mod, attr_name)
+    except AttributeError:
+        raise ImproperlyConfigured('Module "%s" does not define a "%s" backend' % (module_name, attr_name))
