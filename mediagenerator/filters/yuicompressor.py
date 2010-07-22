@@ -4,10 +4,6 @@ from subprocess import Popen, PIPE
 
 class YUICompressor(Filter):
     def __init__(self, **kwargs):
-        self.config(kwargs, separate_files=False)
-        if not self.separate_files:
-            kwargs['input'] = [{'filter': 'mediagenerator.filters.concat.Concat',
-                                'input': kwargs.pop('input')}]
         super(YUICompressor, self).__init__(**kwargs)
         assert self.filetype in ('css', 'js'), (
             'YUICompressor only supports compilation to css and js. '
