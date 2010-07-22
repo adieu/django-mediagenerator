@@ -64,6 +64,6 @@ def include_media(parser, token):
 
     return MediaNode(group, variation)
 
-@register.filter
+@register.simple_tag
 def media_url(url):
     return utils.media_url(url)
