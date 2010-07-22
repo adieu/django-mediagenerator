@@ -94,13 +94,15 @@ class Filter(object):
         ext = os.path.splitext(name)[1].lstrip('.')
         if ext in DEFAULT_MEDIA_FILTERS and self.should_use_default_filter(ext):
             backend_class = load_backend(DEFAULT_MEDIA_FILTERS[ext])
-            config = backend_class.from_default(name)
-            # This is added to make really sure we don't instantiate the same
-            # filter in an endless loop. Normally, the child class should
-            # take care of this in should_use_default_filter().
-            config['_from_default'] = ext
-            return backend_class(filetype=self.input_filetype, **config)
-        return self.file_filter(name=name, filetype=self.input_filetype)
+        else:
+            backend_class = self.file_filter
+
+        config = backend_class.from_default(name)
+        # This is added to make really sure we don't instantiate the same
+        # filter in an endless loop. Normally, the child class should
+        # take care of this in should_use_default_filter().
+        config['_from_default'] = ext
+        return backend_class(filetype=self.input_filetype, **config)
 
     def _get_variations_with_input(self):
         """Utility function to get variations including input variations"""
@@ -128,6 +130,11 @@ class FileFilter(Filter):
     def __init__(self, **kwargs):
         self.config(kwargs, name=None)
         super(FileFilter, self).__init__(**kwargs)
+
+    @classmethod
+    def from_default(cls, name):
+        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
+                'name': name}
 
     def get_output(self, variation):
         yield self.get_dev_output(self.name, variation)
