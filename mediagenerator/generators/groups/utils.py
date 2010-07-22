@@ -18,9 +18,15 @@ def _load_root_filter_uncached(group):
     else:
         raise ValueError('Could not find media group "%s"' % group)
     filetype = os.path.splitext(group)[-1].lstrip('.')
-    root_filter = ROOT_MEDIA_FILTERS.get(filetype, DEFAULT_ROOT_MEDIA_FILTER)
-    backend_class = load_backend(root_filter)
-    return backend_class(filetype=filetype, input=input)
+    root_filters = ROOT_MEDIA_FILTERS.get(filetype, DEFAULT_ROOT_MEDIA_FILTER)
+    if not isinstance(root_filters, (tuple, list)):
+        root_filters = (root_filters, )
+
+    backend_class = load_backend(root_filters[-1])
+    for filter in reversed(root_filters[:-1]):
+        input = [{'filter': filter, 'input': input,}]
+
+    return backend_class(filter=root_filters[-1], filetype=filetype, input=input)
 
 def _get_key(group, variation_map=None):
     if variation_map:
