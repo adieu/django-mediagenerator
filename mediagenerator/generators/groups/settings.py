@@ -9,6 +9,7 @@ DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
 DEFAULT_ROOT_MEDIA_FILTER = getattr(settings, 'DEFAULT_ROOT_MEDIA_FILTER',
     'mediagenerator.filters.concat.Concat')
 
-ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS', {})
+ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS',
+    {'css': 'mediagenerator.filters.cssurl.CSSURL'})
 
 MEDIA_GROUPS = getattr(settings, 'MEDIA_GROUPS', ())
