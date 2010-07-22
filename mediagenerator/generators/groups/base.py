@@ -133,8 +133,9 @@ class FileFilter(Filter):
         yield self.get_dev_output(self.name, variation)
 
     def get_dev_output(self, name, variation):
-        name = name.split('/', 1)[-1]
-        assert name == self.name, "File name doen't match the one in GENERATE_MEDIA"
+        assert name == self.name, (
+            '''File name "%s" doen't match the one in GENERATE_MEDIA ("%s")'''
+            % (name, self.name))
         path = find_file(name)
         assert path, """File name "%s" doesn't exist.""" % name
         fp = open(path, 'r')
