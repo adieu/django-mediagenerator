@@ -22,6 +22,6 @@ class CSSURL(Filter):
 
     def fixurls(self, match):
         url = match.group(1)
-        if not url.startswith(('/', 'http://', 'https://')):
+        if ':' not in url and not url.startswith('/'):
             url = media_url(url)
         return 'url(%s)' % url
