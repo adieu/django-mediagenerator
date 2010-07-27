@@ -1,6 +1,11 @@
+from django.conf import settings
 from mediagenerator.generators.groups.base import Filter
 from mediagenerator.utils import media_url
 import re
+
+url_re = re.compile(r'url\s*\(["\']?([\w\.][^:]*?)["\']?\)', re.UNICODE)
+
+REWRITE_CSS_MEDIA_URLS = getattr(settings, 'REWRITE_CSS_MEDIA_URLS', True)
 
 class CSSURL(Filter):
     def __init__(self, **kwargs):
@@ -18,7 +23,9 @@ class CSSURL(Filter):
         return self.rewrite_urls(content)
 
     def rewrite_urls(self, content):
-        return re.sub(r'url\s*\(["\']?([\w\.][^:]*?)["\']?\)', self.fixurls, content)
+        if not REWRITE_CSS_MEDIA_URLS:
+            return content
+        return url_re.sub(self.fixurls, content)
 
     def fixurls(self, match):
         url = match.group(1)

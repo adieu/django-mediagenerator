@@ -59,9 +59,11 @@ def get_media_dirs():
             media_dirs.append(root)
     return media_dirs
 
-def find_file(name):
+def find_file(name, media_dirs=None):
+    if media_dirs is None:
+        media_dirs = get_media_dirs()
     name = name.replace(os.sep, '/')
-    for root in get_media_dirs():
+    for root in media_dirs:
         for root_path, dirs, files in os.walk(root):
             for file in files:
                 path = os.path.join(root_path, file)

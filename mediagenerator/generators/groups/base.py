@@ -25,8 +25,7 @@ class Filter(object):
 
     @classmethod
     def from_default(cls, name):
-        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
-                'input': name}
+        return {'input': name}
 
     def should_use_default_filter(self, ext):
         return ext != self._from_default
@@ -98,11 +97,14 @@ class Filter(object):
             backend_class = self.file_filter
 
         config = backend_class.from_default(name)
+        config.setdefault('filter',
+            '%s.%s' % (backend_class.__module__, backend_class.__name__))
+        config.setdefault('filetype', self.input_filetype)
         # This is added to make really sure we don't instantiate the same
         # filter in an endless loop. Normally, the child class should
         # take care of this in should_use_default_filter().
-        config['_from_default'] = ext
-        return backend_class(filetype=self.input_filetype, **config)
+        config.setdefault('_from_default', ext)
+        return backend_class(**config)
 
     def _get_variations_with_input(self):
         """Utility function to get variations including input variations"""

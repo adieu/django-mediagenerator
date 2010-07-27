@@ -76,8 +76,7 @@ class Pyjs(Filter):
 
     @classmethod
     def from_default(cls, name):
-        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
-                'main_module': name.rsplit('.', 1)[0],
+        return {'main_module': name.rsplit('.', 1)[0],
                 'path': os.path.dirname(find_file(name))}
 
     def get_output(self, variation):
