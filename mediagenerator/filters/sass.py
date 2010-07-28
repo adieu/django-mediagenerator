@@ -24,36 +24,30 @@ class Sass(Filter):
         assert self.main_module, \
             'You must provide a main module'
 
-        self.input_filetype = 'sass'
-
         self.path += tuple(get_media_dirs())
         self.path_args = []
         for path in self.path:
             self.path_args.extend(('-I', path))
 
         self._compiled = None
+        self._compiled_hash = None
         self._dependencies = {}
 
     @classmethod
     def from_default(cls, name):
         return {'main_module': name}
 
-    def should_use_default_filter(self, ext):
-        if ext == 'sass':
-            return False
-        return super(Sass, self).should_use_default_filter(ext)
-
     def get_output(self, variation):
         self._regenerate()
         yield self._compiled
 
     def get_dev_output(self, name, variation):
+        assert name == self.main_module
         self._regenerate()
-        yield self._compiled
+        return self._compiled
 
     def get_dev_output_names(self, variation):
-        hash = sha1(self._compiled).hexdigest()
-        yield self.main_module, hash
+        yield self.main_module, self._compiled_hash
 
     def _compile(self, input):
         cmd = Popen(['sass', '-C', '-t', 'expanded', '-E', 'utf-8']
@@ -105,6 +99,7 @@ class Sass(Filter):
         fp.close()
 
         self._compiled = self._compile(source)
+        self._compiled_hash = sha1(self._compiled).hexdigest()
 
     def _get_dependencies(self, source):
         clean_source = multi_line_comment_re.sub('\n', source)
