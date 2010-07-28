@@ -135,8 +135,7 @@ class FileFilter(Filter):
 
     @classmethod
     def from_default(cls, name):
-        return {'filter': '%s.%s' % (cls.__module__, cls.__name__),
-                'name': name}
+        return {'name': name}
 
     def get_output(self, variation):
         yield self.get_dev_output(self.name, variation)
@@ -156,3 +155,19 @@ class FileFilter(Filter):
         output = self.get_dev_output(self.name, variation)
         hash = sha1(output).hexdigest()
         yield self.name, hash
+
+class RawFileFilter(FileFilter):
+    takes_input = False
+
+    def __init__(self, **kwargs):
+        self.config(kwargs, path=None)
+        super(RawFileFilter, self).__init__(**kwargs)
+
+    def get_dev_output(self, name, variation):
+        assert name == self.name, (
+            '''File name "%s" doesn't match the one in GENERATE_MEDIA ("%s")'''
+            % (name, self.name))
+        fp = open(self.path, 'r')
+        output = fp.read()
+        fp.close()
+        return output

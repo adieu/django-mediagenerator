@@ -1,5 +1,7 @@
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.groups.base import Filter, RawFileFilter
 from pyvascript.grammar import compile
+import os
+import pyvascript
 
 class PyvaScript(Filter):
     def __init__(self, **kwargs):
@@ -21,3 +23,10 @@ class PyvaScript(Filter):
     def get_dev_output(self, name, variation):
         content = super(PyvaScript, self).get_dev_output(name, variation)
         return compile(content)
+
+    def get_item(self, name):
+        if name == '.stdlib.pyva':
+            path = os.path.join(os.path.dirname(pyvascript.__file__),
+                                'stdlib.pyva')
+            return RawFileFilter(name='.stdlib.pyva', path=path)
+        return super(PyvaScript, self).get_item(name)
