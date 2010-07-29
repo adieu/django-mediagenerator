@@ -1,5 +1,5 @@
 from django.conf import settings
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.bundles.base import Filter
 from django.http import HttpRequest
 from django.views.i18n import javascript_catalog
 

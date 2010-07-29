@@ -1,5 +1,5 @@
 from hashlib import sha1
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import find_file
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 import os

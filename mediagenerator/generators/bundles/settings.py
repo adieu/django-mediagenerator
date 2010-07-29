@@ -17,4 +17,4 @@ BASE_ROOT_MEDIA_FILTERS = getattr(settings, 'BASE_ROOT_MEDIA_FILTERS', {
     'css': 'mediagenerator.filters.cssurl.CSSURL',
 })
 
-MEDIA_GROUPS = getattr(settings, 'MEDIA_GROUPS', ())
+MEDIA_BUNDLES = getattr(settings, 'MEDIA_BUNDLES', ())

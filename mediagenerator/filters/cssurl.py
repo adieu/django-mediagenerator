@@ -1,5 +1,5 @@
 from django.conf import settings
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import media_url
 import re
 

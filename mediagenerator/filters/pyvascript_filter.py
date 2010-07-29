@@ -1,4 +1,4 @@
-from mediagenerator.generators.groups.base import Filter, RawFileFilter
+from mediagenerator.generators.bundles.base import Filter, RawFileFilter
 from pyvascript.grammar import compile
 import os
 import pyvascript

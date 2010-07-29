@@ -1,4 +1,4 @@
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.bundles.base import Filter
 
 class Concat(Filter):
     """

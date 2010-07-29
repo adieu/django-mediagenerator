@@ -1,5 +1,5 @@
 from hashlib import sha1
-from mediagenerator.generators.groups.base import Filter
+from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_dirs, find_file
 from subprocess import Popen, PIPE
 import os
