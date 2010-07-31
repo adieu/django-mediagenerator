@@ -1,6 +1,7 @@
 from django.conf import settings
 from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import media_url
+import logging
 import re
 
 url_re = re.compile(r'url\s*\(["\']?([\w\.][^:]*?)["\']?\)', re.UNICODE)
@@ -30,5 +31,8 @@ class CSSURL(Filter):
     def fixurls(self, match):
         url = match.group(1)
         if ':' not in url and not url.startswith('/'):
-            url = media_url(url)
+            try:
+                url = media_url(url)
+            except:
+                logging.error('URL not found: %s' % url)
         return 'url(%s)' % url
