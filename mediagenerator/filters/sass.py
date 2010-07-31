@@ -1,9 +1,13 @@
+from django.conf import settings
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_dirs, find_file
 from subprocess import Popen, PIPE
 import os
 import re
+
+# Emits extra debug info that can be used by the FireSass Firebug plugin
+SASS_DEBUG_INFO = getattr(settings, 'SASS_DEBUG_INFO', False)
 
 _RE_FLAGS = re.MULTILINE | re.UNICODE
 multi_line_comment_re = re.compile(r'/\*.*?\*/', _RE_FLAGS | re.DOTALL)
@@ -38,26 +42,32 @@ class Sass(Filter):
         return {'main_module': name}
 
     def get_output(self, variation):
-        self._regenerate()
+        self._regenerate(debug=False)
         yield self._compiled
 
     def get_dev_output(self, name, variation):
         assert name == self.main_module
-        self._regenerate()
+        self._regenerate(debug=True)
         return self._compiled
 
     def get_dev_output_names(self, variation):
+        self._regenerate(debug=True)
         yield self.main_module, self._compiled_hash
 
-    def _compile(self, input):
-        cmd = Popen(['sass', '-C', '-t', 'expanded', '-E', 'utf-8']
-                    + self.path_args, shell=True, universal_newlines=True,
+    def _compile(self, debug=False):
+        run = ['sass', '-C', '-t', 'expanded', '-E', 'utf-8']
+        if debug:
+            run.append('--line-numbers')
+            if SASS_DEBUG_INFO:
+                run.append('--debug-info')
+        run.extend(self.path_args)
+        cmd = Popen(run, shell=True, universal_newlines=True,
                     stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output, error = cmd.communicate(input)
+        output, error = cmd.communicate('@import %s' % self.main_module)
         assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
         return output
 
-    def _regenerate(self):
+    def _regenerate(self, debug=False):
         if self._dependencies:
             for name, mtime in self._dependencies.items():
                 path = self._find_file(name)
@@ -92,13 +102,8 @@ class Sass(Filter):
                               'dependency %s' % (module_name, name))
                 if name not in self._dependencies:
                     modules.append(name)
-        
-        path = self._find_file(self.main_module)
-        fp = open(path, 'r')
-        source = fp.read()
-        fp.close()
 
-        self._compiled = self._compile(source)
+        self._compiled = self._compile(debug=debug)
         self._compiled_hash = sha1(self._compiled).hexdigest()
 
     def _get_dependencies(self, source):
