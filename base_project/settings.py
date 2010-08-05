@@ -4,7 +4,7 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-MEDIA_GROUPS = (
+MEDIA_BUNDLES = (
     ('main.css',
         'reset.css',
         'style.css',
