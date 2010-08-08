@@ -1,7 +1,8 @@
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import find_file
+from mediagenerator.utils import find_file, get_media_dirs
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
+from textwrap import dedent
 import os
 
 try:
@@ -16,7 +17,7 @@ try:
 
     @native_js_func
     def PYVA(content):
-        return compile(content)
+        return compile(dedent(content))
 except ImportError:
     # No PyvaScript installed
     pass
@@ -30,6 +31,7 @@ INIT_CODE = """
 var $wnd = window;
 var $doc = window.document;
 var $pyjs = new Object();
+$pyjs.platform = 'safari';
 $pyjs.global_namespace = this;
 $pyjs.__modules__ = {};
 $pyjs.modules_hash = {};
@@ -46,8 +48,10 @@ $pyjs.options.dynamic_loading = false;
 $pyjs.trackstack = [];
 $pyjs.track = {module:'__main__', lineno: 1};
 $pyjs.trackstack.push($pyjs.track);
+$pyjs.__active_exception_stack__ = null;
 $pyjs.__last_exception_stack__ = null;
 $pyjs.__last_exception__ = null;
+$pyjs.in_try_except = 0;
 """.lstrip()
 
 class Pyjs(Filter):
@@ -58,6 +62,7 @@ class Pyjs(Filter):
                     debug=None, path=(), only_dependencies=None)
         if isinstance(self.path, basestring):
             self.path = (self.path,)
+        self.path += tuple(get_media_dirs())
         if self.only_dependencies is None:
             self.only_dependencies = bool(self.main_module)
         if self.only_dependencies:
@@ -76,8 +81,7 @@ class Pyjs(Filter):
 
     @classmethod
     def from_default(cls, name):
-        return {'main_module': name.rsplit('.', 1)[0],
-                'path': os.path.dirname(find_file(name))}
+        return {'main_module': name.rsplit('.', 1)[0]}
 
     def get_output(self, variation):
         self._collect_all_modules()
@@ -121,7 +125,9 @@ class Pyjs(Filter):
         self._collect_all_modules()
 
         if not self.exclude_main_libs:
-            yield '.init.js', None
+            content = self._compile_init()
+            hash = sha1(content).hexdigest()
+            yield '.init.js', hash
 
         if self.only_dependencies:
             self._regenerate(dev_mode=True)
@@ -132,13 +138,16 @@ class Pyjs(Filter):
                 yield name, None
 
         if self.main_module is not None or not self.exclude_main_libs:
-            yield '.main.js', None
+            content = self._compile_main()
+            hash = sha1(content).hexdigest()
+            yield '.main.js', hash
 
     def _regenerate(self, dev_mode=False):
         # This function is only called in only_dependencies mode
         if self._compiled:
             for module_name, (mtime, content, hash) in self._compiled.items():
                 if module_name not in self._collected or \
+                        not os.path.exists(self._collected[module_name]) or \
                         os.path.getmtime(self._collected[module_name]) != mtime:
                     # Just recompile everything
                     # TODO: track dependencies and changes and recompile only
