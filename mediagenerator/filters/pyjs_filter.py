@@ -22,6 +22,19 @@ except ImportError:
     # No PyvaScript installed
     pass
 
+_HANDLE_EXCEPTIONS = """
+} catch(err) {
+    $pyjs.in_try_except -= 1;
+    sys.save_exception_stack();
+
+    var $pyjs_msg = '';
+    try {
+        $pyjs_msg = "\\n" + sys.trackstackstr();
+    } catch (s) {};
+    pyjslib['debugReport'](err + '\\nTraceback:' + $pyjs_msg);
+}
+"""
+
 PYJS_INIT_LIB_PATH = os.path.join(LIBRARY_PATH, 'builtin', 'public', '_pyjs.js')
 BUILTIN_PATH = os.path.join(LIBRARY_PATH, 'builtin')
 STDLIB_PATH = os.path.join(LIBRARY_PATH, 'lib')
@@ -40,7 +53,7 @@ $pyjs.options = new Object();
 $pyjs.options.arg_ignore = true;
 $pyjs.options.arg_count = true;
 $pyjs.options.arg_is_instance = true;
-$pyjs.options.arg_instance_type = true;
+$pyjs.options.arg_instance_type = false;
 $pyjs.options.arg_kwarg_dup = true;
 $pyjs.options.arg_kwarg_unexpected_keyword = true;
 $pyjs.options.arg_kwarg_multiple_values = true;
@@ -78,6 +91,7 @@ class Pyjs(Filter):
 
         self._compiled = {}
         self._collected = {}
+        self.debug = False
 
     @classmethod
     def from_default(cls, name):
@@ -100,17 +114,17 @@ class Pyjs(Filter):
                 fp.close()
                 yield output
 
-        yield self._compile_main()
+        yield self._compile_main(dev_mode=False)
 
     def get_dev_output(self, name, variation):
         self._collect_all_modules()
         
         name = name.split('/', 1)[-1]
 
-        if name == '.init.js':
+        if name == '._pyjs.js':
             return self._compile_init()
         elif name == '.main.js':
-            return self._compile_main()
+            return self._compile_main(dev_mode=True)
 
         if self.only_dependencies:
             self._regenerate(dev_mode=True)
@@ -127,7 +141,7 @@ class Pyjs(Filter):
         if not self.exclude_main_libs:
             content = self._compile_init()
             hash = sha1(content).hexdigest()
-            yield '.init.js', hash
+            yield '._pyjs.js', hash
 
         if self.only_dependencies:
             self._regenerate(dev_mode=True)
@@ -138,7 +152,7 @@ class Pyjs(Filter):
                 yield name, None
 
         if self.main_module is not None or not self.exclude_main_libs:
-            content = self._compile_main()
+            content = self._compile_main(dev_mode=True)
             hash = sha1(content).hexdigest()
             yield '.main.js', hash
 
@@ -171,7 +185,11 @@ class Pyjs(Filter):
             source = fp.read()
             fp.close()
 
-            content, py_deps, js_deps = self._compile(module_name, source, dev_mode=dev_mode)
+            try:
+                content, py_deps, js_deps = self._compile(module_name, source, dev_mode=dev_mode)
+            except:
+                self._compiled = {}
+                raise
             hash = sha1(content).hexdigest()
             self._compiled[module_name] = (mtime, content, hash)
 
@@ -194,8 +212,15 @@ class Pyjs(Filter):
         tree = compiler.parse(source)
         output = StringIO()
         translator = Translator(compiler, name, name, source, tree, output,
+            # Debug options
             debug=debug, source_tracking=debug, line_tracking=debug,
-            store_source=debug)
+            store_source=debug,
+            # Speed and size optimizations
+            function_argument_checking=False, attribute_checking=False,
+            inline_code=False, number_classes=False,
+            # Sufficient Python conformance
+            operator_funcs=True, bound_methods=True, descriptors=True,
+        )
         return output.getvalue(), translator.imported_modules, translator.imported_js
 
     def _compile_init(self):
@@ -204,13 +229,23 @@ class Pyjs(Filter):
         fp.close()
         return INIT_CODE + content
 
-    def _compile_main(self):
+    def _compile_main(self, dev_mode=False):
+        if self.debug is None:
+            debug = dev_mode
+        else:
+            debug = self.debug
         content = ''
         if not self.exclude_main_libs:
             content += '\n\n$pyjs.loaded_modules["pyjslib"]("pyjslib");'
             content += '\n$pyjs.__modules__.pyjslib = $pyjs.loaded_modules["pyjslib"];'
         if self.main_module is not None:
-            content += '\n\npyjslib.___import___("%s", null, "__main__");' % self.main_module
+            content += '\n\n'
+            if debug:
+                content += '$pyjs.in_try_except += 1;\n'
+                content += 'try {\n'
+            content += 'pyjslib.___import___("%s", null, "__main__");' % self.main_module
+            if debug:
+                content += _HANDLE_EXCEPTIONS
         return content
 
     def _collect_all_modules(self):
