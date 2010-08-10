@@ -23,15 +23,9 @@ except ImportError:
     pass
 
 _HANDLE_EXCEPTIONS = """
+  } finally { $pyjs.in_try_except -= 1; }
 } catch(err) {
-    $pyjs.in_try_except -= 1;
-    sys.save_exception_stack();
-
-    var $pyjs_msg = '';
-    try {
-        $pyjs_msg = "\\n" + sys.trackstackstr();
-    } catch (s) {};
-    pyjslib['debugReport'](err + '\\nTraceback:' + $pyjs_msg);
+  pyjslib['_handle_exception'](err);
 }
 """
 
@@ -91,7 +85,6 @@ class Pyjs(Filter):
 
         self._compiled = {}
         self._collected = {}
-        self.debug = False
 
     @classmethod
     def from_default(cls, name):
@@ -241,8 +234,9 @@ class Pyjs(Filter):
         if self.main_module is not None:
             content += '\n\n'
             if debug:
-                content += '$pyjs.in_try_except += 1;\n'
                 content += 'try {\n'
+                content += '  try {\n'
+                content += '    $pyjs.in_try_except += 1;\n    '
             content += 'pyjslib.___import___("%s", null, "__main__");' % self.main_module
             if debug:
                 content += _HANDLE_EXCEPTIONS
