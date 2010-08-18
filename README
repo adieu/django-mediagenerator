@@ -1,6 +1,5 @@
-django-mediagenerator: total asset management
-================================================================
-With django-mediagenerator_ you can combine and compress your JS
+django-mediagenerator_ is an asset manager.
+With django-mediagenerator you can combine and compress your JS
 and CSS files. It also takes care of automatically versioning your
 files (including images), so browsers will load an updated version
 when you change any of your files. This works by adding a version

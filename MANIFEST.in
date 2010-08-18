@@ -1,0 +1,1 @@
+recursive-include mediagenerator/filters/pyjslibs *.py
