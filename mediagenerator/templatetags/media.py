@@ -1,10 +1,6 @@
 from .. import utils
-from ..settings import MEDIA_DEV_MODE
-from ..utils import _refresh_dev_names, _generated_names
 from django import template
-from django.conf import settings
-from mediagenerator.generators.bundles.utils import _load_root_filter, _get_key
-import os
+from mediagenerator.generators.bundles.utils import _render_include_media
 
 register = template.Library()
 
@@ -19,30 +15,7 @@ class MediaNode(template.Node):
         for key, value in self.variation.items():
             variation[key] = template.Variable(value).resolve(context)
 
-        if MEDIA_DEV_MODE:
-            root = _load_root_filter(bundle)
-            variations = root._get_variations_with_input()
-            variation_map = [(key, variation[key])
-                             for key in sorted(variations.keys())]
-            _refresh_dev_names()
-            bundle_key = _get_key(bundle, variation_map)
-            urls = [settings.MEDIA_URL + key for key in _generated_names[bundle_key]]
-        else:
-            variation_map = tuple((key, variation[key]) for key in sorted(variation.keys()))
-            urls = (utils.media_url(_get_key(bundle, variation_map)),)
-
-        filetype = os.path.splitext(bundle)[-1].lstrip('.')
-        if filetype == 'css':
-            tag = '<link rel="stylesheet" type="text/css" href="%s" />'
-        elif filetype == 'js':
-            tag = '<script type="text/javascript" src="%s"></script>'
-        else:
-            raise ValueError("""Don't know how to include file type "%s".""" % filetype)
-
-        code = []
-        for url in urls:
-            code.append(tag % url)
-        return '\n'.join(code)
+        return _render_include_media(bundle, variation)
 
 @register.tag
 def include_media(parser, token):
