@@ -1,4 +1,4 @@
-django-mediagenerator_ is an asset manager.
+django-mediagenerator_ is an asset manager for Django.
 With django-mediagenerator you can combine and compress your JS
 and CSS files. It also takes care of automatically versioning your
 files (including images), so browsers will load an updated version
