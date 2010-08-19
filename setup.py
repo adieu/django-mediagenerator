@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 DESCRIPTION = 'Extensible media/asset manager for Django'
 LONG_DESCRIPTION = None
 try:
-    LONG_DESCRIPTION = open('README').read()
+    LONG_DESCRIPTION = open('README.rst').read()
 except:
     pass
 
