@@ -1,6 +1,5 @@
 from django.conf import settings
 from mediagenerator.generators.bundles.base import Filter
-from subprocess import Popen, PIPE
 
 class YUICompressor(Filter):
     def __init__(self, **kwargs):
@@ -10,6 +9,9 @@ class YUICompressor(Filter):
             'The parent filter expects "%s".' % self.filetype)
 
     def get_output(self, variation):
+        # We import this here, so App Engine Helper users don't get import
+        # errors.
+        from subprocess import Popen, PIPE
         for input in self.get_input(variation):
             try:
                 compressor = settings.YUICOMPRESSOR_PATH
