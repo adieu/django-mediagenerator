@@ -16,8 +16,12 @@ try:
     from pyjs.translator import native_js_func
 
     @native_js_func
-    def PYVA(content):
-        return compile(dedent(content))
+    def PYVA(content, translator, current_klass, is_statement):
+        content = translator.translate_escaped_names(content, current_klass)
+        result = compile(dedent(content))
+        if not is_statement:
+            return result.rstrip().rstrip(';')
+        return result
 except ImportError:
     # No PyvaScript installed
     pass
