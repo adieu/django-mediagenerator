@@ -6,7 +6,7 @@ from mimetypes import guess_type
 import os
 
 COPY_MEDIA_FILETYPES = getattr(settings, 'COPY_MEDIA_FILETYPES',
-    ('gif', 'jpg', 'jpeg', 'png', 'svg'))
+    ('gif', 'jpg', 'jpeg', 'png', 'svg', 'ico'))
 
 class CopyFiles(Generator):
     def get_dev_output(self, name):
