@@ -7,6 +7,7 @@ MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
 #    'mediagenerator.generators.sprites.Sprites',
     'mediagenerator.generators.copyfiles.CopyFiles',
     'mediagenerator.generators.bundles.Bundles',
+    'mediagenerator.generators.manifest.Manifest',
 ))
 
 GENERATED_MEDIA_DIR = os.path.abspath(getattr(settings, 'GENERATE_MEDIA_DIR',

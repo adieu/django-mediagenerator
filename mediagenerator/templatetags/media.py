@@ -39,3 +39,10 @@ def include_media(parser, token):
 @register.simple_tag
 def media_url(url):
     return utils.media_url(url)
+
+@register.filter
+def media_urls(url):
+    urls = utils.media_url(url)
+    if isinstance(urls, basestring):
+        urls = (urls,)
+    return urls
