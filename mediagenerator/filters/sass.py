@@ -4,6 +4,7 @@ from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_dirs, find_file
 from subprocess import Popen, PIPE
 import os
+import platform
 import re
 
 # Emits extra debug info that can be used by the FireSass Firebug plugin
@@ -55,13 +56,14 @@ class Sass(Filter):
         yield self.main_module, self._compiled_hash
 
     def _compile(self, debug=False):
-        run = ['sass', '-C', '-t', 'expanded', '-E', 'utf-8']
+        run = ['sass', '-C', '-t', 'expanded']
         if debug:
             run.append('--line-numbers')
             if SASS_DEBUG_INFO:
                 run.append('--debug-info')
         run.extend(self.path_args)
-        cmd = Popen(run, shell=True, universal_newlines=True,
+        shell = platform.system() == 'Windows'
+        cmd = Popen(run, shell=shell, universal_newlines=True,
                     stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, error = cmd.communicate('@import %s' % self.main_module)
         assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
