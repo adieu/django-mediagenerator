@@ -36,10 +36,10 @@ def _refresh_dev_names():
             _generated_names[key].append(versioned_url)
             _backend_mapping[url] = backend
 
-def get_media_keys():
+def get_media_mapping():
     if media_settings.MEDIA_DEV_MODE:
-        return _generated_names.keys()
-    return NAMES.keys()
+        return _generated_names
+    return NAMES
 
 def media_url(key):
     if media_settings.MEDIA_DEV_MODE:

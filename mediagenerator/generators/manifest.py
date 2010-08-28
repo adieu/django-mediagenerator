@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.template.loader import render_to_string
 from mediagenerator.base import Generator
-from mediagenerator.utils import media_url, get_media_keys
+from mediagenerator.utils import get_media_mapping
 
 OFFLINE_MANIFEST = getattr(settings, 'OFFLINE_MANIFEST', {})
 if isinstance(OFFLINE_MANIFEST, basestring):
@@ -26,7 +26,7 @@ class Manifest(Generator):
 
         cache = tuple(get_tuple(config, 'cache', '*'))
         if cache == ('*',):
-            cache = get_media_keys()
+            cache = get_media_mapping().keys()
         cache = set(cache) - set(OFFLINE_MANIFEST.keys())
         cache -= set(get_tuple(config, 'exclude'))
 
