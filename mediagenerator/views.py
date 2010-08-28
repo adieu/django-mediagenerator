@@ -1,10 +1,13 @@
 from .utils import _refresh_dev_names, _backend_mapping
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.cache import patch_cache_control
 
 def serve_dev_mode(request, filename):
     _refresh_dev_names()
-    backend = _backend_mapping[filename]
+    try:
+        backend = _backend_mapping[filename]
+    except KeyError:
+        raise Http404('No such file "%s"' % filename)
     content, mimetype = backend.get_dev_output(filename)
     response = HttpResponse(content, content_type=mimetype)
     # Cache manifest files MUST NEVER be cached or you'll be unable to update
