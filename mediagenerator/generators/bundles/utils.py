@@ -15,7 +15,7 @@ def _load_root_filter(bundle):
 def _get_root_filters_list(filetype):
     root_filters = ()
     filetypes = (filetype, '*')
-    for filters_spec in (ROOT_MEDIA_FILTERS, BASE_ROOT_MEDIA_FILTERS):
+    for filters_spec in (BASE_ROOT_MEDIA_FILTERS, ROOT_MEDIA_FILTERS):
         for filetype in filetypes:
             filters = filters_spec.get(filetype, ())
             if not isinstance(filters, (tuple, list)):
