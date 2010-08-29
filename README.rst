@@ -21,6 +21,18 @@ to further simplify debugging.
 
 Visit the `project site`_ for more information.
 
+Changelog
+=============================================================
+
+Version 1.1
+-------------------------------------------------------------
+
+* Added Closure compiler backend
+* Added HTML5 cache manifest file backend
+* Fixed Sass support on Linux
+* Updated pyjs filter to latest pyjs repo version
+* "swf" and "ico" files are now copied, too, by default
+
 .. _django-mediagenerator: http://www.allbuttonspressed.com/projects/django-mediagenerator
 .. _project site: django-mediagenerator_
 .. _Sass: http://sass-lang.com/
