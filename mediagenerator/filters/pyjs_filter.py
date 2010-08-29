@@ -37,10 +37,18 @@ BUILTIN_PATH = os.path.join(LIBRARY_PATH, 'builtin')
 STDLIB_PATH = os.path.join(LIBRARY_PATH, 'lib')
 EXTRA_LIBS_PATH = os.path.join(os.path.dirname(__file__), 'pyjslibs')
 
+_LOAD_PYJSLIB = """
+
+$p = $pyjs.loaded_modules["pyjslib"];
+$p('pyjslib');
+$pyjs.__modules__.pyjslib = $p['pyjslib']
+"""
+
 INIT_CODE = """
 var $wnd = window;
 var $doc = window.document;
 var $pyjs = new Object();
+var $p = null;
 $pyjs.platform = 'safari';
 $pyjs.global_namespace = this;
 $pyjs.__modules__ = {};
@@ -212,7 +220,7 @@ class Pyjs(Filter):
             debug=debug, source_tracking=debug, line_tracking=debug,
             store_source=debug,
             # Speed and size optimizations
-            function_argument_checking=False, attribute_checking=False,
+            function_argument_checking=debug, attribute_checking=False,
             inline_code=False, number_classes=False,
             # Sufficient Python conformance
             operator_funcs=True, bound_methods=True, descriptors=True,
@@ -232,8 +240,7 @@ class Pyjs(Filter):
             debug = self.debug
         content = ''
         if not self.exclude_main_libs:
-            content += '\n\n$pyjs.loaded_modules["pyjslib"]("pyjslib");'
-            content += '\n$pyjs.__modules__.pyjslib = $pyjs.loaded_modules["pyjslib"];'
+            content += _LOAD_PYJSLIB
         if self.main_module is not None:
             content += '\n\n'
             if debug:
