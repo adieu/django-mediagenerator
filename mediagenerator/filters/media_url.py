@@ -1,23 +1,25 @@
 from django.utils.simplejson import dumps
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import get_media_mapping
+from mediagenerator.utils import get_media_url_mapping
 from hashlib import sha1
 
 _CODE = """
 _$MEDIA_URLS = %s;
+
 media_urls = function(key) {
-  urls = _$MEDIA_URLS[key];
+  var urls = _$MEDIA_URLS[key];
   if (!urls)
     throw 'Could not resolve media url ' + key;
   return urls;
 };
+
 media_url = function(key) {
-  urls = media_urls(key);
+  var urls = media_urls(key);
   if (urls.length == 1)
     return urls[0];
   return urls;
 };
-"""
+""".lstrip()
 
 class MediaURL(Filter):
     takes_input = False
@@ -41,4 +43,4 @@ class MediaURL(Filter):
         yield '.media_url.js', hash
 
     def _compile(self):
-        return _CODE % dumps(get_media_mapping())
+        return _CODE % dumps(get_media_url_mapping())

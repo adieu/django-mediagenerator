@@ -41,6 +41,20 @@ def get_media_mapping():
         return _generated_names
     return NAMES
 
+def get_media_url_mapping():
+    if media_settings.MEDIA_DEV_MODE:
+        base_url = settings.MEDIA_URL
+    else:
+        base_url = PRODUCTION_MEDIA_URL
+
+    mapping = {}
+    for key, value in get_media_mapping().items():
+        if isinstance(value, basestring):
+            value = (value,)
+        mapping[key] = [base_url + url for url in value]
+
+    return mapping
+
 def media_url(key):
     if media_settings.MEDIA_DEV_MODE:
         _refresh_dev_names()
