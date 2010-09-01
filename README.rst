@@ -24,6 +24,12 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.2
+-------------------------------------------------------------
+
+* Added media_url() filter which provides access to generated URLs from JS
+* CopyFiles backend can now ignore files matching certain regex patterns
+
 Version 1.1
 -------------------------------------------------------------
 
