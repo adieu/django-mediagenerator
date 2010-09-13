@@ -1,7 +1,10 @@
 from .utils import _refresh_dev_names, _backend_mapping
 from django.http import HttpResponse, Http404
 from django.utils.cache import patch_cache_control
+from django.utils.http import http_date
+import time
 
+MAX_AGE = 60*60*24*365
 def serve_dev_mode(request, filename):
     _refresh_dev_names()
     try:
@@ -13,5 +16,6 @@ def serve_dev_mode(request, filename):
     # Cache manifest files MUST NEVER be cached or you'll be unable to update
     # your cached app!!!
     if mimetype != 'text/cache-manifest':
-        patch_cache_control(response, private=True, max_age=60*60*24*365)
+        patch_cache_control(response, private=True, max_age=MAX_AGE)
+        response['Expires'] = http_date(time.time() + MAX_AGE)
     return response
