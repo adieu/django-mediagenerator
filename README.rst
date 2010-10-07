@@ -27,6 +27,7 @@ Changelog
 Version 1.2
 -------------------------------------------------------------
 
+* Got rid of unnecessary HTTP roundtrips when ``USE_ETAGS = True``
 * Added media_url() filter which provides access to generated URLs from JS
 * CopyFiles backend can now ignore files matching certain regex patterns
 
