@@ -28,6 +28,7 @@ Version 1.2
 -------------------------------------------------------------
 
 * Got rid of unnecessary HTTP roundtrips when ``USE_ETAGS = True``
+* Added Django template filter (by default only used for .html files), contributed by Matt Bierner
 * Added media_url() filter which provides access to generated URLs from JS
 * CopyFiles backend can now ignore files matching certain regex patterns
 
