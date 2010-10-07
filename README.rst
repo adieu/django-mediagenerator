@@ -27,6 +27,8 @@ Changelog
 Version 1.2
 -------------------------------------------------------------
 
+**Upgrade notes:** Please add ``'mediagenerator.middleware.MediaMiddleware'`` as the **first** middleware in your settings.py.
+
 * Got rid of unnecessary HTTP roundtrips when ``USE_ETAGS = True``
 * Added Django template filter (by default only used for .html files), contributed by Matt Bierner
 * Added media_url() filter which provides access to generated URLs from JS
