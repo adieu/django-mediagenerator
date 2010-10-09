@@ -15,8 +15,9 @@ class MediaMiddleware(object):
         if not request.path.startswith(settings.MEDIA_URL):
             return response
 
-        if response.has_header('ETag'):
-            del response['ETag']
+        for header in ('ETag', 'Expires', 'Cache-Control', 'Vary'):
+            if response.has_header(header):
+                del response[header]
 
         # Cache manifest files MUST NEVER be cached or you'll be unable to update
         # your cached app!!!
