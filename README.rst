@@ -24,7 +24,7 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
-Version 1.2.1 (in development)
+Version 1.2.1
 -------------------------------------------------------------
 
 * Fixed caching problems on runserver when using i18n and ``LocaleMiddleware``
