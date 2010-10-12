@@ -58,7 +58,11 @@ def _render_include_media(bundle, variation):
 
     filetype = os.path.splitext(bundle)[-1].lstrip('.')
     if filetype == 'css':
-        tag = u'<link rel="stylesheet" type="text/css" href="%s" />'
+        media_types = variation.get('media')
+        if media_types:
+            tag = u'<link rel="stylesheet" type="text/css" href="%%s" media="%s" />' % media_types
+        else:
+            tag = u'<link rel="stylesheet" type="text/css" href="%s" />'
     elif filetype == 'js':
         tag = u'<script type="text/javascript" src="%s"></script>'
     else:

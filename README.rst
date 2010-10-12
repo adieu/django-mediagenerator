@@ -24,6 +24,11 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.3
+-------------------------------------------------------------
+
+* Added support for setting media type for CSS. E.g.: ``{% include_media 'bundle.css' media='print' %}``
+
 Version 1.2.1
 -------------------------------------------------------------
 
