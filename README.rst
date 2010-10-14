@@ -24,6 +24,11 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.3.1
+-------------------------------------------------------------
+
+* Improved handling of media variations. This also fixes a bug with using CSS media types in production mode
+
 Version 1.3
 -------------------------------------------------------------
 
