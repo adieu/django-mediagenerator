@@ -44,11 +44,22 @@ def _get_key(bundle, variation_map=None):
     return bundle
 
 def _render_include_media(bundle, variation):
+    variation = variation.copy()
+    filetype = os.path.splitext(bundle)[-1].lstrip('.')
+
+    # The "media" variation is special and defines CSS media types
+    media_types = None
+    if filetype == 'css':
+        media_types = variation.pop('media', None)
+
     if MEDIA_DEV_MODE:
         root = _load_root_filter(bundle)
         variations = root._get_variations_with_input()
-        variation_map = [(key, variation[key])
+        variation_map = [(key, variation.pop(key))
                          for key in sorted(variations.keys())]
+        if variation:
+            raise ValueError('Bundle %s does not support the following variation(s): %s'
+                             % (bundle, ', '.join(variation.keys())))
         _refresh_dev_names()
         bundle_key = _get_key(bundle, variation_map)
         urls = [settings.MEDIA_URL + key for key in _generated_names[bundle_key]]
@@ -56,9 +67,7 @@ def _render_include_media(bundle, variation):
         variation_map = tuple((key, variation[key]) for key in sorted(variation.keys()))
         urls = (media_url(_get_key(bundle, variation_map)),)
 
-    filetype = os.path.splitext(bundle)[-1].lstrip('.')
     if filetype == 'css':
-        media_types = variation.get('media')
         if media_types:
             tag = u'<link rel="stylesheet" type="text/css" href="%%s" media="%s" />' % media_types
         else:
