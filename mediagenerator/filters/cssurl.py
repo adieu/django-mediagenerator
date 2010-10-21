@@ -6,7 +6,7 @@ import re
 
 url_re = re.compile(r'url\s*\(["\']?([\w\.][^:]*?)["\']?\)', re.UNICODE)
 
-REWRITE_CSS_MEDIA_URLS = getattr(settings, 'REWRITE_CSS_MEDIA_URLS', True)
+REWRITE_CSS_URLS = getattr(settings, 'REWRITE_CSS_URLS', True)
 
 class CSSURL(Filter):
     def __init__(self, **kwargs):
@@ -24,7 +24,7 @@ class CSSURL(Filter):
         return self.rewrite_urls(content)
 
     def rewrite_urls(self, content):
-        if not REWRITE_CSS_MEDIA_URLS:
+        if not REWRITE_CSS_URLS:
             return content
         return url_re.sub(self.fixurls, content)
 

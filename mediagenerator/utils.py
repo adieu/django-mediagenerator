@@ -73,9 +73,11 @@ def get_media_dirs():
     for app in settings.INSTALLED_APPS:
         if app in IGNORE_APP_MEDIA_DIRS:
             continue
-        root = os.path.join(os.path.dirname(import_module(app).__file__), 'media')
-        if os.path.isdir(root):
-            media_dirs.append(root)
+        for name in ('static', 'media'):
+            root = os.path.join(os.path.dirname(import_module(app).__file__),
+                                name)
+            if os.path.isdir(root):
+                media_dirs.append(root)
     return media_dirs
 
 def find_file(name, media_dirs=None):
