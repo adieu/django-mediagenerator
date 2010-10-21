@@ -11,10 +11,13 @@ MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
     'mediagenerator.generators.manifest.Manifest',
 ))
 
-GENERATED_MEDIA_DIR = os.path.abspath(getattr(settings, 'GENERATE_MEDIA_DIR',
-    '_generated_media'))
+GENERATED_MEDIA_DIR = os.path.abspath(
+    getattr(settings, 'GENERATED_MEDIA_DIR',
+            getattr(settings, 'STATICFILES_ROOT', None)
+            or '_generated_media'))
 
-GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS', ())
+GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS',
+                            getattr(settings, 'STATICFILES_DIRS', ()))
 
 IGNORE_APP_MEDIA_DIRS = getattr(settings, 'IGNORE_APP_MEDIA_DIRS',
     ('django.contrib.admin',))
