@@ -35,7 +35,8 @@ def _load_root_filter_uncached(bundle):
     for filter in reversed(root_filters[:-1]):
         input = [{'filter': filter, 'input': input,}]
 
-    return backend_class(filter=root_filters[-1], filetype=filetype, input=input)
+    return backend_class(filter=root_filters[-1], filetype=filetype,
+                         bundle=bundle, input=input)
 
 def _get_key(bundle, variation_map=None):
     if variation_map:

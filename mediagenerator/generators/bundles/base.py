@@ -8,7 +8,8 @@ class Filter(object):
 
     def __init__(self, **kwargs):
         self.file_filter = FileFilter
-        self.config(kwargs, filetype=None, filter=None, _from_default=None)
+        self.config(kwargs, filetype=None, filter=None,
+                            bundle=None, _from_default=None)
 
         # We assume that if this is e.g. a 'js' backend then all input must
         # also be 'js'. Subclasses must override this if they expect a special
@@ -87,7 +88,8 @@ class Filter(object):
 
     def get_filter(self, config):
         backend_class = load_backend(config.get('filter'))
-        return backend_class(filetype=self.input_filetype, **config)
+        return backend_class(filetype=self.input_filetype, bundle=self.bundle,
+                             **config)
 
     def get_item(self, name):
         ext = os.path.splitext(name)[1].lstrip('.')
@@ -100,6 +102,7 @@ class Filter(object):
         config.setdefault('filter',
             '%s.%s' % (backend_class.__module__, backend_class.__name__))
         config.setdefault('filetype', self.input_filetype)
+        config['bundle'] = self.bundle
         # This is added to make really sure we don't instantiate the same
         # filter in an endless loop. Normally, the child class should
         # take care of this in should_use_default_filter().
