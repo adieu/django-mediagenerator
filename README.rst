@@ -24,6 +24,23 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.5
+-------------------------------------------------------------
+
+This is another staticfiles-compatibility release which is intended to allow for writing reusable open-source apps.
+
+**Upgrade notes:** The CSS URL rewriting scheme has changed. Previously, ``url()`` statements in CSS files were treated similar to "absolute" URLs where the root is ``STATICFILES_URL`` (or ``MEDIA_URL``). This scheme was used because it was consistent with URLs in Sass. Now URLs are treated as relative to the CSS file. So, if the file ``css/style.css`` wants to link to ``img/icon.png`` the URL now has to be ``url(../img/icon.png)``. Previously it was ``url(img/icon.png)``. One way to upgrade to the staticfiles-compatible scheme is to modify your existing URLs.
+
+If you don't want to change your CSS files this there is an alternative, but it's not staticfiles-compatible. Add the following to your settings: ``REWRITE_CSS_URLS_RELATIVE_TO_SOURCE = False``
+
+**Important:** Sass files still use the old scheme (``url(img/icon.png)``) because this is **much** easier to understand and allows for more reusable code, especially when you ``@import`` other Sass modules and those link to images.
+
+* Made CSS URL rewriting system compatible with ``django.contrib.staticfiles``
+* Added support for CSS URLs that contain a hash (e.g.: ``url('webfont.svg#webfontmAfNlbV6')``). Thanks to Karl Bowden for the patch!
+* Filter backends now have an additional ``self.bundle`` attribute which contains the final bundle name
+* Fixed an incompatibility with Django 1.1 and 1.0 (``django.utils.itercompat.product`` isn't available in those releases)
+* Fixed ``MediaMiddleware``, so it doesn't cache error responses
+
 Version 1.4
 -------------------------------------------------------------
 

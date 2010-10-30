@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-DESCRIPTION = 'Total asset management for Django. Combine and compress your media.'
+DESCRIPTION = 'Total asset management for Django. Combine and compress your JavaScript and CSS.'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()
@@ -8,7 +8,7 @@ except:
     pass
 
 setup(name='django-mediagenerator',
-      version='1.4',
+      version='1.5',
       packages=find_packages(exclude=('tests', 'tests.*',
                                       'base_project', 'base_project.*')),
       package_data={'mediagenerator.filters': ['pyjslibs/*.py']},
