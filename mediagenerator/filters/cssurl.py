@@ -30,9 +30,12 @@ class CSSURL(Filter):
 
     def fixurls(self, match):
         url = match.group(1)
+        hashid = ''
+        if '#' in url:
+            url, hashid = url.split('#', 1)
         if ':' not in url and not url.startswith('/'):
             try:
                 url = media_url(url)
             except:
                 logging.error('URL not found: %s' % url)
-        return 'url(%s)' % url
+        return 'url(%s%s%s)' % (url, '#' if hashid else '', hashid)
