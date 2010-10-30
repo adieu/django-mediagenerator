@@ -21,7 +21,8 @@ class MediaMiddleware(object):
 
         # Cache manifest files MUST NEVER be cached or you'll be unable to update
         # your cached app!!!
-        if response['Content-Type'] != 'text/cache-manifest':
+        if response['Content-Type'] != 'text/cache-manifest' and \
+                response.status_code == 200:
             patch_cache_control(response, public=True, max_age=self.MAX_AGE)
             response['Expires'] = http_date(time.time() + self.MAX_AGE)
         return response
