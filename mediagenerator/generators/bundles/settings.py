@@ -1,10 +1,11 @@
 from django.conf import settings
 
 DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
-    'sass': 'mediagenerator.filters.sass.Sass',
+    'css': 'mediagenerator.filters.cssurl.CSSURLFileFilter',
+    'html': 'mediageneraator.filters.template.Template',
     'py': 'mediagenerator.filters.pyjs_filter.Pyjs',
     'pyva': 'mediagenerator.filters.pyvascript_filter.PyvaScript',
-    'html': 'mediageneraator.filters.template.Template',
+    'sass': 'mediagenerator.filters.sass.Sass',
 })
 
 ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS', {})

@@ -55,9 +55,10 @@ def get_media_url_mapping():
 
     return mapping
 
-def media_url(key):
+def media_url(key, refresh=True):
     if media_settings.MEDIA_DEV_MODE:
-        _refresh_dev_names()
+        if refresh:
+            _refresh_dev_names()
         urls = [MEDIA_URL + url for url in _generated_names[key]]
         if len(urls) == 1:
             return urls[0]
