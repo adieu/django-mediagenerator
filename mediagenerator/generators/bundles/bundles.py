@@ -3,7 +3,12 @@ from .utils import _load_root_filter, _get_key
 try:
     from itertools import product
 except ImportError:
-    from django.utils.itercompat import product
+    try:
+        from django.utils.itercompat import product
+    except ImportError:
+        # Needed for Django 1.0 and 1.1 support.
+        # TODO/FIXME: Remove this when nobody uses Django 1.0/1.1, anymore.
+        from .itercompat import product
 from mediagenerator.base import Generator
 from mimetypes import guess_type
 import os
