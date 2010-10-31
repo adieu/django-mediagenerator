@@ -1,6 +1,6 @@
 from . import settings as media_settings
 from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
-    IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS, MEDIA_URL
+    IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS, DEV_MEDIA_URL
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
@@ -43,7 +43,7 @@ def get_media_mapping():
 
 def get_media_url_mapping():
     if media_settings.MEDIA_DEV_MODE:
-        base_url = MEDIA_URL
+        base_url = DEV_MEDIA_URL
     else:
         base_url = PRODUCTION_MEDIA_URL
 
@@ -59,7 +59,7 @@ def media_url(key, refresh=True):
     if media_settings.MEDIA_DEV_MODE:
         if refresh:
             _refresh_dev_names()
-        urls = [MEDIA_URL + url for url in _generated_names[key]]
+        urls = [DEV_MEDIA_URL + url for url in _generated_names[key]]
         if len(urls) == 1:
             return urls[0]
         return urls

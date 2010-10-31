@@ -1,5 +1,5 @@
 from .settings import ROOT_MEDIA_FILTERS, MEDIA_BUNDLES, BASE_ROOT_MEDIA_FILTERS
-from mediagenerator.settings import MEDIA_URL, MEDIA_DEV_MODE
+from mediagenerator.settings import DEV_MEDIA_URL, MEDIA_DEV_MODE
 from mediagenerator.utils import load_backend, _refresh_dev_names, \
     _generated_names, media_url
 import os
@@ -62,7 +62,7 @@ def _render_include_media(bundle, variation):
                              % (bundle, ', '.join(variation.keys())))
         _refresh_dev_names()
         bundle_key = _get_key(bundle, variation_map)
-        urls = [MEDIA_URL + key for key in _generated_names[bundle_key]]
+        urls = [DEV_MEDIA_URL + key for key in _generated_names[bundle_key]]
     else:
         variation_map = tuple((key, variation[key]) for key in sorted(variation.keys()))
         urls = (media_url(_get_key(bundle, variation_map)),)
