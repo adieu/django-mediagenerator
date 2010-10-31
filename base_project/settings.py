@@ -6,8 +6,8 @@ TEMPLATE_DEBUG = DEBUG
 
 MEDIA_BUNDLES = (
     ('main.css',
-        'reset.css',
-        'style.css',
+        'css/reset.css',
+        'css/style.css',
     ),
 )
 
@@ -16,16 +16,17 @@ _project_root = os.path.dirname(__file__)
 
 # Set global media search paths
 GLOBAL_MEDIA_DIRS = (
-    os.path.join(_project_root, 'media'),
+    os.path.join(_project_root, 'static'),
 )
 
-# Set media URL (important: don't forget the trailing slash!)
+# Set media URL (important: don't forget the trailing slash!).
+# PRODUCTION_MEDIA_URL is used when running manage.py generatemedia
 MEDIA_DEV_MODE = DEBUG
 PRODUCTION_MEDIA_URL = '/media/'
 if MEDIA_DEV_MODE:
-    MEDIA_URL = '/devmedia/'
+    DEV_MEDIA_URL = '/devmedia/'
 else:
-    MEDIA_URL = PRODUCTION_MEDIA_URL
+    DEV_MEDIA_URL = PRODUCTION_MEDIA_URL
 
 # Configure yuicompressor if available
 YUICOMPRESSOR_PATH = os.path.join(
@@ -36,6 +37,8 @@ if os.path.exists(YUICOMPRESSOR_PATH):
         'css': 'mediagenerator.filters.yuicompressor.YUICompressor',
     }
 
+ADMIN_MEDIA_PREFIX = '/media/admin/'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -45,7 +48,7 @@ DATABASES = {
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
-SITE_ID = 4094
+SITE_ID = 1
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -55,6 +58,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'mediagenerator.middleware.MediaMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,15 +71,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 USE_I18N = False
 
-ADMIN_MEDIA_PREFIX = '/media/admin/'
-
 MEDIA_ROOT = os.path.join(_project_root, 'media')
 
 TEMPLATE_DIRS = (os.path.join(_project_root, 'templates'),)
 
 ROOT_URLCONF = 'urls'
-
-try:
-    from settings_local import *
-except ImportError:
-    pass
