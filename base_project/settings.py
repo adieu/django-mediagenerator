@@ -22,11 +22,8 @@ GLOBAL_MEDIA_DIRS = (
 # Set media URL (important: don't forget the trailing slash!).
 # PRODUCTION_MEDIA_URL is used when running manage.py generatemedia
 MEDIA_DEV_MODE = DEBUG
+DEV_MEDIA_URL = '/devmedia/'
 PRODUCTION_MEDIA_URL = '/media/'
-if MEDIA_DEV_MODE:
-    DEV_MEDIA_URL = '/devmedia/'
-else:
-    DEV_MEDIA_URL = PRODUCTION_MEDIA_URL
 
 # Configure yuicompressor if available
 YUICOMPRESSOR_PATH = os.path.join(
