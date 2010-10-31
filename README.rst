@@ -24,6 +24,13 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.5.1
+-------------------------------------------------------------
+
+**Upgrade notes:** There's a conflict with ``STATICFILES_URL`` in Django trunk (1.3). Use ``DEV_MEDIA_URL`` instead from now on.
+
+* ``DEV_MEDIA_URL`` should be used instead of ``MEDIA_URL`` and ``STATICFILES_URL``, though the other two are still valid for backwards-compatibility
+
 Version 1.5
 -------------------------------------------------------------
 
@@ -46,10 +53,11 @@ Version 1.4
 
 This is a compatibility release which prepares for the new staticfiles feature in Django 1.3.
 
-**Upgrade notes:** Use ``STATICFILES_URL`` instead of ``MEDIA_URL`` from now on. Starting with Django 1.3 this will default to "/static/" instead of "/media/".
+**Upgrade notes:** Use ``DEV_MEDIA_URL`` instead of ``MEDIA_URL`` from now on.
 
 * App media should from now on be stored in a folder named "static". You can still use "media" folders, but this might be deprecated in the future (for the sake of having just one standard for reusable apps).
-* ``STATICFILES_URL`` must be used instead of ``MEDIA_URL``
+* ``DEV_MEDIA_URL`` should be used instead of ``MEDIA_URL``
+* ``STATICFILES_URL`` can be used instead of ``MEDIA_URL``
 * ``STATICFILES_DIRS`` can be used instead of ``GLOBAL_MEDIA_DIRS``
 * ``STATICFILES_ROOT`` can be used instead of ``GENERATED_MEDIA_DIR``
 
