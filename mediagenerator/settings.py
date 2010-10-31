@@ -13,9 +13,7 @@ MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
 ))
 
 GENERATED_MEDIA_DIR = os.path.abspath(
-    getattr(settings, 'GENERATED_MEDIA_DIR',
-            getattr(settings, 'STATICFILES_ROOT', None)
-            or '_generated_media'))
+    getattr(settings, 'GENERATED_MEDIA_DIR', '_generated_media'))
 
 GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS',
                             getattr(settings, 'STATICFILES_DIRS', ()))

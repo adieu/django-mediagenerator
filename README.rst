@@ -59,7 +59,6 @@ This is a compatibility release which prepares for the new staticfiles feature i
 * ``DEV_MEDIA_URL`` should be used instead of ``MEDIA_URL``
 * ``STATICFILES_URL`` can be used instead of ``MEDIA_URL``
 * ``STATICFILES_DIRS`` can be used instead of ``GLOBAL_MEDIA_DIRS``
-* ``STATICFILES_ROOT`` can be used instead of ``GENERATED_MEDIA_DIR``
 
 Version 1.3.1
 -------------------------------------------------------------
