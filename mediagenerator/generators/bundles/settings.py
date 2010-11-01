@@ -1,8 +1,10 @@
 from django.conf import settings
 
 DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
+    'ccss': 'mediagenerator.filters.clevercss.CleverCSS',
     'css': 'mediagenerator.filters.cssurl.CSSURLFileFilter',
     'html': 'mediageneraator.filters.template.Template',
+    'less': 'mediagenerator.filters.less.Less',
     'py': 'mediagenerator.filters.pyjs_filter.Pyjs',
     'pyva': 'mediagenerator.filters.pyvascript_filter.PyvaScript',
     'sass': 'mediagenerator.filters.sass.Sass',
