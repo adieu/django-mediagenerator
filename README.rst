@@ -43,7 +43,7 @@ This is another staticfiles-compatibility release which is intended to allow for
 
 **Upgrade notes:** The CSS URL rewriting scheme has changed. Previously, ``url()`` statements in CSS files were treated similar to "absolute" URLs where the root is ``STATICFILES_URL`` (or ``MEDIA_URL``). This scheme was used because it was consistent with URLs in Sass. Now URLs are treated as relative to the CSS file. So, if the file ``css/style.css`` wants to link to ``img/icon.png`` the URL now has to be ``url(../img/icon.png)``. Previously it was ``url(img/icon.png)``. One way to upgrade to the staticfiles-compatible scheme is to modify your existing URLs.
 
-If you don't want to change your CSS files this there is an alternative, but it's not staticfiles-compatible. Add the following to your settings: ``REWRITE_CSS_URLS_RELATIVE_TO_SOURCE = False``
+If you don't want to change your CSS files there is an alternative, but it's not staticfiles-compatible. Add the following to your settings: ``REWRITE_CSS_URLS_RELATIVE_TO_SOURCE = False``
 
 **Important:** Sass files still use the old scheme (``url(img/icon.png)``) because this is **much** easier to understand and allows for more reusable code, especially when you ``@import`` other Sass modules and those link to images.
 
@@ -58,12 +58,11 @@ Version 1.4
 
 This is a compatibility release which prepares for the new staticfiles feature in Django 1.3.
 
-**Upgrade notes:** Use ``DEV_MEDIA_URL`` (edit: was ``STATICFILES_URL``) instead of ``MEDIA_URL`` from now on.
+**Upgrade notes:** Place your app media in a "static" folder instead of a "media" folder. Use ``DEV_MEDIA_URL`` (edit: was ``STATICFILES_URL``) instead of ``MEDIA_URL`` from now on.
 
-* App media should from now on be stored in a folder named "static". You can still use "media" folders, but this might be deprecated in the future (for the sake of having just one standard for reusable apps).
-* ``DEV_MEDIA_URL`` (edit: was ``STATICFILES_URL``) should be used instead of ``MEDIA_URL``
-* ``STATICFILES_URL`` can be used instead of ``MEDIA_URL``
-* ``STATICFILES_DIRS`` can be used instead of ``GLOBAL_MEDIA_DIRS``
+* App media is now searched in "static" folders instead of "media". For now, you can still use "media" folders, but this might be deprecated in the future (for the sake of having just one standard for reusable apps).
+* ``DEV_MEDIA_URL`` (edit: was ``STATICFILES_URL``) should be used instead of ``MEDIA_URL`` because the meaning of that variable has changed in Django 1.3.
+* ``DEV_MEDIA_URL`` falls back to ``STATICFILES_URL`` and ``GLOBAL_MEDIA_DIRS`` falls back to ``STATICFILES_DIRS`` if undefined (you should still use the former, respectively; this is just for convenience)
 
 Version 1.3.1
 -------------------------------------------------------------
