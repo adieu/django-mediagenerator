@@ -28,6 +28,7 @@ Version 1.6 (in development)
 -------------------------------------------------------------
 
 * Added support for CleverCSS
+* Added support for pre-bundling i18n JavaScript translations via ``mediagenerator.filters.i18n.I18N``, so you don't need to use Django's slower AJAX view. With this filter translations are part of your generated JS bundle!
 
 Version 1.5.1
 -------------------------------------------------------------
