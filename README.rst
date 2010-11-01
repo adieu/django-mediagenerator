@@ -24,6 +24,11 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.6 (in development)
+-------------------------------------------------------------
+
+* Added support for CleverCSS
+
 Version 1.5.1
 -------------------------------------------------------------
 
