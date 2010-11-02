@@ -1,23 +1,37 @@
 from .settings import DEV_MEDIA_URL, MEDIA_DEV_MODE
-from django.utils.cache import patch_cache_control
-from django.utils.http import http_date
-import time
+# Only load other dependencies if they're needed
+if MEDIA_DEV_MODE:
+    from .utils import _refresh_dev_names, _backend_mapping
+    from django.http import HttpResponse, Http404
+    from django.utils.cache import patch_cache_control
+    from django.utils.http import http_date
+    import time
 
 class MediaMiddleware(object):
     """
-    Middleware for handling correct caching of media files. Removes
-    ETags from media files to save unnecessary roundtrips.
+    Middleware for serving and browser-side caching of media files.
+
+    This MUST be your *first* entry in MIDDLEWARE_CLASSES. Otherwise, some
+    other middleware might add ETags or otherwise manipulate the caching
+    headers which would result in the browser doing unnecessary HTTP
+    roundtrips for unchanged media.
     """
 
     MAX_AGE = 60*60*24*365
 
-    def process_response(self, request, response):
+    def process_request(self, request):
         if not MEDIA_DEV_MODE or not request.path.startswith(DEV_MEDIA_URL):
-            return response
+            return
 
-        for header in ('ETag', 'Expires', 'Cache-Control', 'Vary'):
-            if response.has_header(header):
-                del response[header]
+        filename = request.path[len(DEV_MEDIA_URL):]
+
+        _refresh_dev_names()
+        try:
+            backend = _backend_mapping[filename]
+        except KeyError:
+            raise Http404('No such media file "%s"' % filename)
+        content, mimetype = backend.get_dev_output(filename)
+        response = HttpResponse(content, content_type=mimetype)
 
         # Cache manifest files MUST NEVER be cached or you'll be unable to update
         # your cached app!!!
