@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 import os
+import re
 
 try:
     from _generated_media_names import NAMES
@@ -35,6 +36,26 @@ def _refresh_dev_names():
             _generated_names.setdefault(key, [])
             _generated_names[key].append(versioned_url)
             _backend_mapping[url] = backend
+
+class _MatchNothing(object):
+    def match(self, content):
+        return False
+
+def prepare_patterns(patterns, setting_name):
+    """Helper function for patter-matching settings."""
+    if isinstance(patterns, basestring):
+        patterns = (patterns,)
+    if not patterns:
+        return _MatchNothing()
+    # First validate each pattern individually
+    for pattern in patterns:
+        try:
+            re.compile(pattern, re.U)
+        except re.error:
+            raise ValueError("""Pattern "%s" can't be compiled """
+                             "in %s" % (pattern, setting_name))
+    # Now return a combined pattern
+    return re.compile('|'.join(patterns), re.U)
 
 def get_media_mapping():
     if media_settings.MEDIA_DEV_MODE:
