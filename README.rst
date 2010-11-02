@@ -24,12 +24,15 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
-Version 1.6 (in development)
+Version 1.6
 -------------------------------------------------------------
+
+**Upgrade notes:** The installation got simplified. Please remove the media code from your urls.py. The ``MediaMiddleware`` now takes care of everything.
 
 * Added support for CSS data URIs. Doesn't yet generate MHTML for IE6/7 support.
 * Added support for pre-bundling i18n JavaScript translations, so you don't need to use Django's slower AJAX view. With this filter translations are part of your generated JS bundle.
 * Added support for CleverCSS
+* Simplified installation process. The media view got completely replaced by ``MediaMiddleware``.
 * Fixed support for output variations (needed by i18n filter to generate the same JS file in different variations for each language)
 
 Version 1.5.1
