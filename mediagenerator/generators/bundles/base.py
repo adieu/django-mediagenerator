@@ -116,7 +116,7 @@ class Filter(object):
             return variations
 
         for filter in self.get_input_filters():
-            subvariations = filter.get_variations()
+            subvariations = filter._get_variations_with_input()
             for k, v in subvariations.items():
                 if k in variations and v != variations[k]:
                     raise ValueError('Conflicting variations for "%s": %r != %r' % (
