@@ -1,7 +1,10 @@
+from base64 import b64encode
 from django.conf import settings
 from mediagenerator.generators.bundles.base import Filter, FileFilter
-from mediagenerator.utils import media_url
+from mediagenerator.utils import media_url, prepare_patterns, find_file
+from mimetypes import guess_type
 import logging
+import os
 import posixpath
 import re
 
@@ -14,6 +17,11 @@ REWRITE_CSS_URLS = getattr(settings, 'REWRITE_CSS_URLS', True)
 # considered absolute with regards to STATICFILES_URL)
 REWRITE_CSS_URLS_RELATIVE_TO_SOURCE = getattr(settings,
     'REWRITE_CSS_URLS_RELATIVE_TO_SOURCE', True)
+
+GENERATE_DATA_URIS = getattr(settings, 'GENERATE_DATA_URIS', False)
+MAX_DATA_URI_FILE_SIZE = getattr(settings, 'MAX_DATA_URI_FILE_SIZE', 12*1024)
+IGNORE_PATTERN = prepare_patterns(getattr(settings,
+   'IGNORE_DATA_URI_PATTERNS', (r'.*\.htc',)), 'IGNORE_DATA_URI_PATTERNS')
 
 class URLRewriter(object):
     def __init__(self, base_path='./'):
@@ -36,6 +44,13 @@ class URLRewriter(object):
             rebased_url = posixpath.join(self.base_path, url)
             rebased_url = posixpath.normpath(rebased_url)
             try:
+                if GENERATE_DATA_URIS:
+                    path = find_file(rebased_url)
+                    if os.path.getsize(path) <= MAX_DATA_URI_FILE_SIZE and \
+                            not IGNORE_PATTERN.match(rebased_url):
+                        data = b64encode(open(path, 'rb').read())
+                        mime = guess_type(path)[0] or 'application/octet-stream'
+                        return 'url(data:%s;base64,%s)' % (mime, data)
                 url = media_url(rebased_url, refresh=False)
             except:
                 logging.error('URL not found: %s' % url)

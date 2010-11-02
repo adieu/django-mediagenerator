@@ -27,8 +27,10 @@ Changelog
 Version 1.6 (in development)
 -------------------------------------------------------------
 
+* Added support for CSS data URIs. Doesn't yet generate MHTML for IE6/7 support.
+* Added support for pre-bundling i18n JavaScript translations, so you don't need to use Django's slower AJAX view. With this filter translations are part of your generated JS bundle.
 * Added support for CleverCSS
-* Added support for pre-bundling i18n JavaScript translations via ``mediagenerator.filters.i18n.I18N``, so you don't need to use Django's slower AJAX view. With this filter translations are part of your generated JS bundle!
+* Fixed support for output variations (needed by i18n filter to generate the same JS file in different variations for each language)
 
 Version 1.5.1
 -------------------------------------------------------------
