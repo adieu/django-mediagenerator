@@ -33,7 +33,7 @@ def _load_root_filter_uncached(bundle):
     root_filters = _get_root_filters_list(filetype)
     backend_class = load_backend(root_filters[-1])
     for filter in reversed(root_filters[:-1]):
-        input = [{'filter': filter, 'input': input,}]
+        input = [{'filter': filter, 'input': input}]
 
     return backend_class(filter=root_filters[-1], filetype=filetype,
                          bundle=bundle, input=input)

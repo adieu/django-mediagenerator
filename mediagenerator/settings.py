@@ -6,7 +6,6 @@ DEV_MEDIA_URL = getattr(settings, 'DEV_MEDIA_URL',
 PRODUCTION_MEDIA_URL = getattr(settings, 'PRODUCTION_MEDIA_URL', DEV_MEDIA_URL)
 
 MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
-#    'mediagenerator.generators.sprites.Sprites',
     'mediagenerator.generators.copyfiles.CopyFiles',
     'mediagenerator.generators.bundles.Bundles',
     'mediagenerator.generators.manifest.Manifest',
