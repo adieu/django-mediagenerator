@@ -4,4 +4,4 @@
   background: url(../../img/django.png) bottom left no-repeat;
 }
 
-* #django { display: inline; zoom: 1; }  /* for IE7 */
+* #django { height: 0; }  /* for IE7 */
