@@ -8,6 +8,7 @@ MEDIA_BUNDLES = (
     ('main.css',
         'css/reset.css',
         'css/style.css',
+        'css/icons/icon.css',
     ),
 )
 

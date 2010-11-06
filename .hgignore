@@ -16,3 +16,4 @@ _generated_media*
 desktop.ini
 nbproject
 settings_local.py
+sqlite.db

@@ -1,0 +1,7 @@
+#django {
+  padding: 32px 0 0 70px;
+  display: inline-block;
+  background: url(../../img/django.png) bottom left no-repeat;
+}
+
+* #django { display: inline; zoom: 1; }  /* for IE7 */

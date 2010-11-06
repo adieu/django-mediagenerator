@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load media %}
 {% block title %}Home{% endblock %}
 
 {% block content %}
@@ -14,4 +15,17 @@ Welcome to the media generator base project. This project is primarily intended 
   <li>integrating <a href="http://pyjs.org/">pyjs</a> and other JavaScript compilers</li>
   <li>etc.</li>
 </ul>
+
+<h2>Example: Integrating an image</h2>
+<p>
+Let's see a two examples of how you would add an image to your website.
+</p>
+
+<p>
+This icon is integrated via the CSS background property: <span id="django"></span>
+</p>
+
+<p>
+This icon is integrated via the media_url template tag: <img src="{% media_url 'img/django.png' %}" alt="gtalk" />
+</p>
 {% endblock %}
