@@ -24,6 +24,11 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.7 (in development)
+-------------------------------------------------------------
+
+* Large performance improvements, in particular on App Engine dev_appserver
+
 Version 1.6.1
 -------------------------------------------------------------
 
