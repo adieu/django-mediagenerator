@@ -134,6 +134,7 @@ class FileFilter(Filter):
 
     def __init__(self, **kwargs):
         self.config(kwargs, name=None)
+        self.mtime = self.hash = None
         super(FileFilter, self).__init__(**kwargs)
 
     @classmethod
@@ -147,17 +148,26 @@ class FileFilter(Filter):
         assert name == self.name, (
             '''File name "%s" doesn't match the one in GENERATE_MEDIA ("%s")'''
             % (name, self.name))
-        path = find_file(name)
-        assert path, """File name "%s" doesn't exist.""" % name
+        path = self._get_path()
         fp = open(path, 'r')
         output = fp.read()
         fp.close()
         return output
 
     def get_dev_output_names(self, variation):
-        output = self.get_dev_output(self.name, variation)
-        hash = sha1(output).hexdigest()
+        path = self._get_path()
+        mtime = os.path.getmtime(path)
+        if mtime != self.mtime:
+            output = self.get_dev_output(self.name, variation)
+            hash = sha1(output).hexdigest()
+        else:
+            hash = self.hash
         yield self.name, hash
+
+    def _get_path(self):
+        path = find_file(self.name)
+        assert path, """File name "%s" doesn't exist.""" % self.name
+        return path
 
 class RawFileFilter(FileFilter):
     takes_input = False
@@ -174,3 +184,12 @@ class RawFileFilter(FileFilter):
         output = fp.read()
         fp.close()
         return output
+
+    def get_dev_output_names(self, variation):
+        mtime = os.path.getmtime(self.path)
+        if mtime != self.mtime:
+            output = self.get_dev_output(self.name, variation)
+            hash = sha1(output).hexdigest()
+        else:
+            hash = self.hash
+        yield self.name, hash

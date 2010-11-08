@@ -1,7 +1,7 @@
 from .settings import DEV_MEDIA_URL, MEDIA_DEV_MODE
+from .utils import _refresh_dev_names, _backend_mapping
 # Only load other dependencies if they're needed
 if MEDIA_DEV_MODE:
-    from .utils import _refresh_dev_names, _backend_mapping
     from django.http import HttpResponse, Http404
     from django.utils.cache import patch_cache_control
     from django.utils.http import http_date
@@ -20,12 +20,18 @@ class MediaMiddleware(object):
     MAX_AGE = 60*60*24*365
 
     def process_request(self, request):
-        if not MEDIA_DEV_MODE or not request.path.startswith(DEV_MEDIA_URL):
+        if not MEDIA_DEV_MODE:
+            return
+
+        # We refresh the dev names only once for the whole request, so all
+        # media_url() calls are cached.
+        _refresh_dev_names()
+
+        if not request.path.startswith(DEV_MEDIA_URL):
             return
 
         filename = request.path[len(DEV_MEDIA_URL):]
 
-        _refresh_dev_names()
         try:
             backend = _backend_mapping[filename]
         except KeyError:

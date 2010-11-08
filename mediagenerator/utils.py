@@ -13,6 +13,7 @@ except ImportError:
     NAMES = {}
 
 _backends_cache = {}
+_media_dirs_cache = []
 
 _generators_cache = []
 _generated_names = {}
@@ -76,43 +77,38 @@ def get_media_url_mapping():
 
     return mapping
 
-def media_url(key, refresh=True):
+def media_urls(key, refresh=False):
     if media_settings.MEDIA_DEV_MODE:
         if refresh:
             _refresh_dev_names()
-        urls = [DEV_MEDIA_URL + url for url in _generated_names[key]]
-        if len(urls) == 1:
-            return urls[0]
-        return urls
-    return PRODUCTION_MEDIA_URL + NAMES[key]
+        return [DEV_MEDIA_URL + url for url in _generated_names[key]]
+    return [PRODUCTION_MEDIA_URL + NAMES[key]]
+
+def media_url(key, refresh=False):
+    urls = media_urls(key, refresh=refresh)
+    if len(urls) == 1:
+        return urls[0]
+    return urls
 
 def get_media_dirs():
-    media_dirs = []
-    for root in GLOBAL_MEDIA_DIRS:
-        root = os.path.abspath(root)
-        if os.path.isdir(root):
-            media_dirs.append(root)
-    for app in settings.INSTALLED_APPS:
-        if app in IGNORE_APP_MEDIA_DIRS:
-            continue
-        for name in ('static', 'media'):
-            root = os.path.join(os.path.dirname(import_module(app).__file__),
-                                name)
-            if os.path.isdir(root):
-                media_dirs.append(root)
-    return media_dirs
+    if not _media_dirs_cache:
+        media_dirs = [os.path.abspath(root) for root in GLOBAL_MEDIA_DIRS]
+        for app in settings.INSTALLED_APPS:
+            if app in IGNORE_APP_MEDIA_DIRS:
+                continue
+            for name in ('static', 'media'):
+                app_root = os.path.dirname(import_module(app).__file__)
+                media_dirs.append(os.path.join(app_root, name))
+        _media_dirs_cache.extend(media_dirs)
+    return _media_dirs_cache
 
 def find_file(name, media_dirs=None):
     if media_dirs is None:
         media_dirs = get_media_dirs()
-    name = name.replace(os.sep, '/')
     for root in media_dirs:
-        for root_path, dirs, files in os.walk(root):
-            for file in files:
-                path = os.path.join(root_path, file)
-                media_path = path[len(root)+1:].replace(os.sep, '/')
-                if media_path == name:
-                    return path
+        path = os.path.normpath(os.path.join(root, name))
+        if os.path.isfile(path):
+            return path
 
 def load_backend(backend):
     if backend not in _backends_cache:

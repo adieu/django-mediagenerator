@@ -42,7 +42,4 @@ def media_url(url):
 
 @register.filter
 def media_urls(url):
-    urls = utils.media_url(url)
-    if isinstance(urls, basestring):
-        urls = (urls,)
-    return urls
+    return utils.media_urls(url)

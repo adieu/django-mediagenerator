@@ -51,7 +51,7 @@ class URLRewriter(object):
                         data = b64encode(open(path, 'rb').read())
                         mime = guess_type(path)[0] or 'application/octet-stream'
                         return 'url(data:%s;base64,%s)' % (mime, data)
-                url = media_url(rebased_url, refresh=False)
+                url = media_url(rebased_url)
             except:
                 logging.error('URL not found: %s' % url)
         return 'url(%s%s)' % (url, hashid)
