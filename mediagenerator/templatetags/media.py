@@ -1,6 +1,6 @@
-from .. import utils
 from django import template
 from mediagenerator.generators.bundles.utils import _render_include_media
+from mediagenerator import utils
 
 register = template.Library()
 

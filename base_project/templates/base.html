@@ -7,7 +7,7 @@
     xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
     lang="{% firstof LANGUAGE_CODE 'en' %}">
   <head>
-    <title>{% if request.path != '/' %}{% block title %}{% endblock %} - {% endif %}Media generator sample project</title>
+    <title>{% ifnotequal request.path '/' %}{% block title %}{% endblock %} - {% endifnotequal %}Media generator sample project</title>
     {% block css %}
       {% include_media 'main.css' %}
     {% endblock %}
