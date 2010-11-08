@@ -24,6 +24,11 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.6.1
+-------------------------------------------------------------
+
+* Fixed support for Django 1.1 which imports ``mediagenerator.templatetags.media`` as ``django.templatetags.media`` and thus breaks relative imports
+
 Version 1.6
 -------------------------------------------------------------
 
