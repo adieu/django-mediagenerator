@@ -24,6 +24,12 @@ Visit the `project site`_ for more information.
 Changelog
 =============================================================
 
+Version 1.8 (in development)
+-------------------------------------------------------------
+
+* Added support for scss files
+* Fixed Sass ``@import`` tracking for partials
+
 Version 1.7
 -------------------------------------------------------------
 
