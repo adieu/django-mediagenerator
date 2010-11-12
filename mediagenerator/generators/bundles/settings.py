@@ -7,6 +7,7 @@ DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
     'py': 'mediagenerator.filters.pyjs_filter.Pyjs',
     'pyva': 'mediagenerator.filters.pyvascript_filter.PyvaScript',
     'sass': 'mediagenerator.filters.sass.Sass',
+    'scss': 'mediagenerator.filters.sass.Sass',
 })
 
 ROOT_MEDIA_FILTERS = getattr(settings, 'ROOT_MEDIA_FILTERS', {})

@@ -115,13 +115,14 @@ class Sass(Filter):
                 if not name.endswith('.css')]
 
     def _find_file(self, name):
-        if not name.endswith(('.sass', '.scss')):
-            names = (name + '.sass', name + '.scss')
-        else:
-            names = (name,)
         parts = name.rsplit('/', 1)
         parts[-1] = '_' + parts[-1]
-        names += ('/'.join(parts),)
+        partial = '/'.join(parts)
+        if not name.endswith(('.sass', '.scss')):
+            names = (name + '.sass', name + '.scss', partial + '.sass',
+                     partial + '.scss')
+        else:
+            names = (name, partial)
         for name in names:
             path = find_file(name, media_dirs=self.path)
             if path:
