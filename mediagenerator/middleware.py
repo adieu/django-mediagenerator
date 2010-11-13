@@ -1,7 +1,7 @@
 from .settings import DEV_MEDIA_URL, MEDIA_DEV_MODE
-from .utils import _refresh_dev_names, _backend_mapping
 # Only load other dependencies if they're needed
 if MEDIA_DEV_MODE:
+    from .utils import _refresh_dev_names, _backend_mapping
     from django.http import HttpResponse, Http404
     from django.utils.cache import patch_cache_control
     from django.utils.http import http_date
