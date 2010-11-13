@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.template.loader import render_to_string
 from mediagenerator.base import Generator
-from mediagenerator.utils import get_media_mapping
+from mediagenerator.utils import get_media_mapping, prepare_patterns
 
 OFFLINE_MANIFEST = getattr(settings, 'OFFLINE_MANIFEST', {})
 if isinstance(OFFLINE_MANIFEST, basestring):
-    OFFLINE_MANIFEST = {OFFLINE_MANIFEST: '*'}
+    OFFLINE_MANIFEST = {OFFLINE_MANIFEST: '.*'}
 
 def get_tuple(data, name, default=()):
     result = data.get(name, default)
@@ -24,11 +24,15 @@ class Manifest(Generator):
         elif isinstance(config, basestring):
             config = {'cache': (config,)}
 
-        cache = tuple(get_tuple(config, 'cache', '*'))
-        if cache == ('*',):
-            cache = get_media_mapping().keys()
-        cache = set(cache) - set(OFFLINE_MANIFEST.keys())
-        cache -= set(get_tuple(config, 'exclude'))
+        cache_pattern = prepare_patterns(get_tuple(config, 'cache', '.*'),
+                                         'OFFLINE_MANIFEST[%s]' % name)
+        exclude = prepare_patterns(get_tuple(config, 'exclude'),
+                                   "OFFLINE_MANIFEST[%s]['exclude']" % name)
+        cache = set()
+        for item in get_media_mapping().keys():
+            if cache_pattern.match(item) and not exclude.match(item):
+                cache.add(item)
+        cache -= set(OFFLINE_MANIFEST.keys())
 
         network = get_tuple(config, 'network')
         fallback = get_tuple(config, 'fallback')
