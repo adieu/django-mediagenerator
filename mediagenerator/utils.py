@@ -7,10 +7,13 @@ from django.utils.importlib import import_module
 import os
 import re
 
-try:
-    from _generated_media_names import NAMES
-except ImportError:
-    NAMES = {}
+if not media_settings.MEDIA_DEV_MODE:
+    try:
+        from _generated_media_names import NAMES
+    except ImportError:
+        raise ImportError('Could not import _generated_media_names. This '
+                          'file is needed for production mode. Please '
+                          'run manage.py generatemedia to create it.')
 
 _backends_cache = {}
 _media_dirs_cache = []

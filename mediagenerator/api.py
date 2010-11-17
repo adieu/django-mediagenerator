@@ -1,6 +1,6 @@
-from . import settings as media_settings
+from . import settings, utils
 from .settings import GENERATED_MEDIA_DIR, MEDIA_GENERATORS
-from .utils import load_backend, NAMES
+from .utils import load_backend
 import os
 import shutil
 
@@ -9,10 +9,10 @@ def generate_media():
         shutil.rmtree(GENERATED_MEDIA_DIR)
 
     # This will make media_url() generate production URLs
-    was_dev_mode = media_settings.MEDIA_DEV_MODE
-    media_settings.MEDIA_DEV_MODE = False
+    was_dev_mode = settings.MEDIA_DEV_MODE
+    settings.MEDIA_DEV_MODE = False
 
-    NAMES.clear()
+    utils.NAMES = {}
 
     for backend_name in MEDIA_GENERATORS:
         backend = load_backend(backend_name)()
@@ -31,11 +31,11 @@ def generate_media():
             fp.write(content)
             fp.close()
 
-            NAMES[key] = url
+            utils.NAMES[key] = url
 
-    media_settings.MEDIA_DEV_MODE = was_dev_mode
+    settings.MEDIA_DEV_MODE = was_dev_mode
 
     # Generate a module with media file name mappings
     fp = open('_generated_media_names.py', 'w')
-    fp.write('NAMES = %r' % NAMES)
+    fp.write('NAMES = %r' % utils.NAMES)
     fp.close()
