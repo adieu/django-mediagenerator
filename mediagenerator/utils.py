@@ -59,7 +59,7 @@ def prepare_patterns(patterns, setting_name):
             raise ValueError("""Pattern "%s" can't be compiled """
                              "in %s" % (pattern, setting_name))
     # Now return a combined pattern
-    return re.compile('|'.join(patterns), re.U)
+    return re.compile('^(' + ')$|^('.join(patterns) + ')$', re.U)
 
 def get_media_mapping():
     if media_settings.MEDIA_DEV_MODE:
