@@ -28,8 +28,8 @@ class Closure(Filter):
                 assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
                 yield output
             except Exception, e:
-                raise ValueError("Failed to execute Java VM or yuicompressor. "
+                raise ValueError("Failed to execute Java VM or Closure. "
                     "Please make sure that you have installed Java "
                     "and that it's in your PATH and that you've configured "
-                    "YUICOMPRESSOR_PATH in your settings correctly.\n"
+                    "CLOSURE_COMPILER_PATH in your settings correctly.\n"
                     "Error was: %s" % e)
