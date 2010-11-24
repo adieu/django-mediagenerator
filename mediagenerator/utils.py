@@ -7,7 +7,7 @@ from django.utils.importlib import import_module
 import os
 import re
 
-if not media_settings.MEDIA_DEV_MODE:
+if not media_settings.MEDIA_DEV_MODE and not media_settings.GENERATING_MEDIA:
     try:
         from _generated_media_names import NAMES
     except ImportError:

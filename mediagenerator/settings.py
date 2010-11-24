@@ -21,3 +21,6 @@ IGNORE_APP_MEDIA_DIRS = getattr(settings, 'IGNORE_APP_MEDIA_DIRS',
     ('django.contrib.admin',))
 
 MEDIA_DEV_MODE = getattr(settings, 'MEDIA_DEV_MODE', settings.DEBUG)
+
+# Used by manage.py generatemedia
+GENERATING_MEDIA = False
