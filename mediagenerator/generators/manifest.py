@@ -34,7 +34,7 @@ class Manifest(Generator):
                 cache.add(item)
         cache -= set(OFFLINE_MANIFEST.keys())
 
-        network = get_tuple(config, 'network')
+        network = get_tuple(config, 'network', ('*',))
         fallback = get_tuple(config, 'fallback')
 
         template = get_tuple(config, 'template') + (
