@@ -7,7 +7,7 @@ import os
 
 COPY_MEDIA_FILETYPES = getattr(settings, 'COPY_MEDIA_FILETYPES',
     ('gif', 'jpg', 'jpeg', 'png', 'svg', 'svgz', 'ico', 'swf', 'ttf', 'otf',
-     'eot'))
+     'eot', 'woff'))
 
 IGNORE_PATTERN = prepare_patterns(getattr(settings,
    'IGNORE_MEDIA_COPY_PATTERNS', ()), 'IGNORE_MEDIA_COPY_PATTERNS')
