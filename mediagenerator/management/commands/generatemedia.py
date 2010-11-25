@@ -1,3 +1,4 @@
+from ...api import generate_media
 from django.core.management.base import NoArgsCommand
 
 class Command(NoArgsCommand):
@@ -6,8 +7,4 @@ class Command(NoArgsCommand):
     requires_model_validation = False
 
     def handle_noargs(self, **options):
-        from ... import settings
-        settings.GENERATING_MEDIA = True
-
-        from ...api import generate_media
         generate_media()

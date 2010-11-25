@@ -7,13 +7,10 @@ from django.utils.importlib import import_module
 import os
 import re
 
-if not media_settings.MEDIA_DEV_MODE and not media_settings.GENERATING_MEDIA:
-    try:
-        from _generated_media_names import NAMES
-    except ImportError:
-        raise ImportError('Could not import _generated_media_names. This '
-                          'file is needed for production mode. Please '
-                          'run manage.py generatemedia to create it.')
+try:
+    from _generated_media_names import NAMES
+except ImportError:
+    NAMES = None
 
 _backends_cache = {}
 _media_dirs_cache = []
@@ -61,10 +58,17 @@ def prepare_patterns(patterns, setting_name):
     # Now return a combined pattern
     return re.compile('^(' + ')$|^('.join(patterns) + ')$', re.U)
 
+def get_production_mapping():
+    if NAMES is None:
+        raise ImportError('Could not import _generated_media_names. This '
+                          'file is needed for production mode. Please '
+                          'run manage.py generatemedia to create it.')
+    return NAMES
+
 def get_media_mapping():
     if media_settings.MEDIA_DEV_MODE:
         return _generated_names
-    return NAMES
+    return get_production_mapping()
 
 def get_media_url_mapping():
     if media_settings.MEDIA_DEV_MODE:
@@ -85,7 +89,7 @@ def media_urls(key, refresh=False):
         if refresh:
             _refresh_dev_names()
         return [DEV_MEDIA_URL + url for url in _generated_names[key]]
-    return [PRODUCTION_MEDIA_URL + NAMES[key]]
+    return [PRODUCTION_MEDIA_URL + get_production_mapping()[key]]
 
 def media_url(key, refresh=False):
     urls = media_urls(key, refresh=refresh)
