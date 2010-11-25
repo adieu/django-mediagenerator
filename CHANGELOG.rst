@@ -5,6 +5,7 @@ Version 1.8.1 (in development)
 -------------------------------------------------------------
 
 * In cache manifests the ``NETWORK`` section now contains "``*``" by default
+* By default ``.woff`` files are now copied, too
 * Fixed first-time media generation when ``MEDIA_DEV_MODE=False``
 
 Version 1.8
