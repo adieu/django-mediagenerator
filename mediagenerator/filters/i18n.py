@@ -27,14 +27,14 @@ class I18N(Filter):
 
     def get_dev_output(self, name, variation):
         language = variation['language']
-        assert language == name + '.js'
+        assert language == name
         return self._generate(language)
 
     def get_dev_output_names(self, variation):
         language = variation['language']
         content = self._generate(language)
         hash = sha1(content).hexdigest()
-        yield content, hash
+        yield language, hash
 
     def _generate(self, language):
         language_bidi = language.split('-')[0] in settings.LANGUAGES_BIDI
