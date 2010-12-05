@@ -12,7 +12,7 @@ class PyvaScript(Filter):
         self.input_filetype = 'pyvascript'
 
     def should_use_default_filter(self, ext):
-        if ext in ('py', 'pyva'):
+        if ext == 'pyva':
             return False
         return super(PyvaScript, self).should_use_default_filter(ext)
 
