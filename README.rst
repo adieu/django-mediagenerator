@@ -1,7 +1,7 @@
 django-mediagenerator_ is an asset manager for Django.
 With django-mediagenerator you can combine and compress your JS
 and CSS files. All files (including images) are versioned, so they
-can be efficient cached with far-future expires.
+can be efficiently cached with far-future expires.
 
 The media generator works in sandboxed environments like App Engine.
 It supports Sass_, HTML5 offline manifests,  Jinja2,
