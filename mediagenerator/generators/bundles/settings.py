@@ -2,6 +2,7 @@ from django.conf import settings
 
 DEFAULT_MEDIA_FILTERS = getattr(settings, 'DEFAULT_MEDIA_FILTERS', {
     'ccss': 'mediagenerator.filters.clevercss.CleverCSS',
+    'coffee': 'mediagenerator.filters.coffeescript.CoffeeScript',
     'css': 'mediagenerator.filters.cssurl.CSSURLFileFilter',
     'html': 'mediageneraator.filters.template.Template',
     'py': 'mediagenerator.filters.pyjs_filter.Pyjs',
