@@ -4,6 +4,7 @@ Changelog
 Version 1.8.1 (in development)
 -------------------------------------------------------------
 
+* Added CoffeeScript support (use ``.coffee`` extension). Contributed by Andrew Allen.
 * In cache manifests the ``NETWORK`` section now contains "``*``" by default
 * By default ``.woff`` files are now copied, too
 * Fixed first-time media generation when ``MEDIA_DEV_MODE=False``
