@@ -66,7 +66,9 @@ class Sass(Filter):
         cmd = Popen(run, shell=shell, universal_newlines=True,
                     stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, error = cmd.communicate('@import %s' % self.main_module)
-        assert cmd.wait() == 0, 'Sass command returned bad result:\n%s' % error
+        assert cmd.wait() == 0, ('Sass command returned bad result (did you '
+                                 'install Sass? http://sass-lang.com):\n%s'
+                                 % error)
         return output
 
     def _regenerate(self, debug=False):
