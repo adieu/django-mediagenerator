@@ -2,7 +2,7 @@ from django.conf import settings
 import os
 
 DEV_MEDIA_URL = getattr(settings, 'DEV_MEDIA_URL',
-                        getattr(settings, 'STATICFILES_URL', settings.MEDIA_URL))
+                        getattr(settings, 'STATIC_URL', settings.MEDIA_URL))
 PRODUCTION_MEDIA_URL = getattr(settings, 'PRODUCTION_MEDIA_URL', DEV_MEDIA_URL)
 
 MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
