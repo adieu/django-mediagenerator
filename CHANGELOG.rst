@@ -9,6 +9,7 @@ Version 1.8.1 (in development)
 * By default ``.woff`` files are now copied, too
 * Fixed first-time media generation when ``MEDIA_DEV_MODE=False``
 * Fixed i18n filter in development mode. Contributed by Simon Payne.
+* Changed ``DEV_MEDIA_URL`` fallback from ``STATICFILES_URL`` to ``STATIC_URL`` (has been changed in Django trunk)
 
 Version 1.8
 -------------------------------------------------------------
