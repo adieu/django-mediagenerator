@@ -17,7 +17,7 @@ media_url = function(key) {
   var urls = media_urls(key);
   if (urls.length == 1)
     return urls[0];
-  return urls;
+  throw 'media_url() only works with keys that point to a single entry (e.g. an image), but not bundles. Use media_urls() instead.';
 };
 """.lstrip()
 

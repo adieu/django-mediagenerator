@@ -95,7 +95,8 @@ def media_url(key, refresh=False):
     urls = media_urls(key, refresh=refresh)
     if len(urls) == 1:
         return urls[0]
-    return urls
+    raise ValueError('media_url() only works with URLs that contain exactly '
+        'one file. Use media_urls() (or {% include_media %} in templates) instead.')
 
 def get_media_dirs():
     if not _media_dirs_cache:
