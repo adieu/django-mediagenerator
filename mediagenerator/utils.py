@@ -4,6 +4,7 @@ from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
+from django.utils.http import urlquote
 import os
 import re
 
@@ -31,7 +32,7 @@ def _refresh_dev_names():
     _backend_mapping.clear()
     for backend in _load_generators():
         for key, url, hash in backend.get_dev_output_names():
-            versioned_url = url
+            versioned_url = urlquote(url)
             if hash:
                 versioned_url += '?version=' + hash
             _generated_names.setdefault(key, [])

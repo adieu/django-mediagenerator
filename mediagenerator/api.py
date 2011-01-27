@@ -1,6 +1,7 @@
 from . import settings, utils
 from .settings import GENERATED_MEDIA_DIR, MEDIA_GENERATORS
 from .utils import load_backend
+from django.utils.http import urlquote
 import os
 import shutil
 
@@ -31,7 +32,7 @@ def generate_media():
             fp.write(content)
             fp.close()
 
-            utils.NAMES[key] = url
+            utils.NAMES[key] = urlquote(url)
 
     settings.MEDIA_DEV_MODE = was_dev_mode
 
