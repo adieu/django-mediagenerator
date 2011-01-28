@@ -26,7 +26,7 @@ class CoffeeScript(Filter):
         yield self._compiled
 
     def get_dev_output(self, name, variation):
-        assert name == self.main_module
+        assert name == self.module
         self._regenerate(debug=True)
         return self._compiled
 
@@ -34,8 +34,8 @@ class CoffeeScript(Filter):
         self._regenerate(debug=True)
         yield self.module, self._compiled_hash
 
-    def _regenerate(debug=False):
-        path = find_file(path)
+    def _regenerate(self, debug=False):
+        path = find_file(self.module)
         mtime = os.path.getmtime(path)
         if mtime == self._mtime:
             return
