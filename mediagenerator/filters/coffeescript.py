@@ -54,7 +54,7 @@ class CoffeeScript(Filter):
             # -p = print the compiled output to stdout
             cmd = Popen(['coffee', '-c', '-p', '-s', '--no-wrap'],
                         stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                        universal_newlines=True)
+                        shell=True, universal_newlines=True)
             output, error = cmd.communicate(input)
             assert cmd.wait() == 0, ('CoffeeScript command returned bad '
                                      'result:\n%s' % error)
