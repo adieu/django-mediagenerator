@@ -1,15 +1,52 @@
+from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
+from mediagenerator.utils import find_file
 from subprocess import Popen, PIPE
+import os
 
 class CoffeeScript(Filter):    
+    takes_input = False
+
     def __init__(self, **kwargs):
+        self.config(kwargs, module=None)
         super(CoffeeScript, self).__init__(**kwargs)
         assert self.filetype == 'js', (
             'CoffeeScript only supports compilation to js. '
             'The parent filter expects "%s".' % self.filetype)
-        self.input_filetype = 'coffee-script'
+        self._compiled = None
+        self._compiled_hash = None
+        self._mtime = None
 
-    def compile(self, input):
+    @classmethod
+    def from_default(cls, name):
+        return {'module': name}
+
+    def get_output(self, variation):
+        self._regenerate(debug=False)
+        yield self._compiled
+
+    def get_dev_output(self, name, variation):
+        assert name == self.main_module
+        self._regenerate(debug=True)
+        return self._compiled
+
+    def get_dev_output_names(self, variation):
+        self._regenerate(debug=True)
+        yield self.module, self._compiled_hash
+
+    def _regenerate(debug=False):
+        path = find_file(path)
+        mtime = os.path.getmtime(path)
+        if mtime == self._mtime:
+            return
+        fp = open(path, 'r')
+        source = fp.read()
+        fp.close()
+        self._compiled = self._compile(source, debug=debug)
+        self._compiled_hash = sha1(self._compiled).hexdigest()
+        self._mtime = mtime
+
+    def _compile(self, input, debug=False):
         try:
             # coffee
             # -s = Read from stdin for the source
@@ -28,16 +65,3 @@ class CoffeeScript(Filter):
                 "on your path and that you can run it from your own command "
                 "line.\n"
                 "Error was: %s" % e)
-
-    def should_use_default_filter(self, ext):
-        if ext == 'coffee':
-            return False
-        return super(CoffeeScript, self).should_use_default_filter(ext)
-
-    def get_output(self, variation):
-        for input in self.get_input(variation):
-            yield self.compile(input)
-
-    def get_dev_output(self, name, variation):
-        content = super(CoffeeScript, self).get_dev_output(name, variation)
-        return self.compile(content)
