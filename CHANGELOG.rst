@@ -1,7 +1,7 @@
 Changelog
 =============================================================
 
-Version 1.8.1 (in development)
+Version 1.9
 -------------------------------------------------------------
 
 * Added CoffeeScript support (use ``.coffee`` extension). Contributed by Andrew Allen.
