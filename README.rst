@@ -8,6 +8,11 @@ It supports Sass_, HTML5 offline manifests,  Jinja2,
 Python (via pyjs_/Pyjamas), PyvaScript_, and much more. Visit the
 `project site`_ for more information.
 
+What's new in version 1.9.1
+=============================================================
+
+* Fixed relative imports in Sass filter
+
 What's new in version 1.9
 =============================================================
 
