@@ -4,6 +4,7 @@ from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_dirs, find_file
 from subprocess import Popen, PIPE
 import os
+import posixpath
 import re
 import sys
 
@@ -101,7 +102,13 @@ class Sass(Filter):
             dependencies = self._get_dependencies(source)
 
             for name in dependencies:
-                path = self._find_file(name)
+                # Try relative import, first
+                transformed = posixpath.join(posixpath.dirname(module_name), name)
+                path = self._find_file(transformed)
+                if path:
+                    name = transformed
+                else:
+                    path = self._find_file(name)
                 assert path, ('The Sass module %s could not find the '
                               'dependency %s' % (module_name, name))
                 if name not in self._dependencies:
