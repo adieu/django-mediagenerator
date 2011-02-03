@@ -41,8 +41,7 @@ class Filter(object):
 
     def get_output(self, variation):
         """
-        Yields file-like objects with content for each output item for the
-        given variation.
+        Yields content for each output item for the given variation.
         """
         raise NotImplementedError()
 
