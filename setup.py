@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-DESCRIPTION = 'Total asset management for Django. Combine and compress your JavaScript and CSS.'
+DESCRIPTION = 'Asset manager for Django: Boost your website!'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()
