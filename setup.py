@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-DESCRIPTION = 'Asset manager for Django: Boost your website!'
+DESCRIPTION = 'Asset manager for Django: Boost your website'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()
