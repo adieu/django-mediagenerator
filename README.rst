@@ -1,20 +1,20 @@
-Improve your user experience with amazingly fast page load times by
-combining, compressing, and versioning your JavaScript & CSS files and
-images. Eliminate unnecessary HTTP requests and maximize cache usage for
-instant page loads with django-mediagenerator_, the most complete
-asset manager for Django.
+Improve your user experience with amazingly fast page loads by combining,
+compressing, and versioning your JavaScript & CSS files and images.
+Eliminate unnecessary HTTP requests and maximize cache usage with
+the django-mediagenerator_ asset manager.
 
 Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the
 `project site`_ for more information.
 
-Most important changes in version 1.9.1 and 1.9
+Most important changes in version 1.9 - 1.9.2
 =============================================================
 
 * Added CoffeeScript support (use ``.coffee`` extension). Contributed by Andrew Allen.
 * In cache manifests the ``NETWORK`` section now contains "``*``" by default
 * Fixed relative imports in Sass filter
 * Fixed i18n filter in development mode. Contributed by Simon Payne.
+* Added missing ``base.manifest`` to zip package
 
 See `CHANGELOG.rst`_ for the complete changelog.
 
