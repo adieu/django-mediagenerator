@@ -38,6 +38,7 @@ class MediaMiddleware(object):
             raise Http404('No such media file "%s"' % filename)
         content, mimetype = backend.get_dev_output(filename)
         response = HttpResponse(content, content_type=mimetype)
+        response['Content-Length'] = len(content)
 
         # Cache manifest files MUST NEVER be cached or you'll be unable to update
         # your cached app!!!
