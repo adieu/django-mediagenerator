@@ -1,6 +1,12 @@
 Changelog
 =============================================================
 
+Version 1.9.3 (in development)
+-------------------------------------------------------------
+
+* Added "Content-Length" response header for files served in dev mode. Thanks to "sayane" for the patch.
+* Fixed typo which resulted in broken support for .html assets. Thanks to "pendletongp" for the patch.
+
 Version 1.9.2
 -------------------------------------------------------------
 
