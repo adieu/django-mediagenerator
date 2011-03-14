@@ -4,8 +4,10 @@ Changelog
 Version 1.9.3 (in development)
 -------------------------------------------------------------
 
-* Added "Content-Length" response header for files served in dev mode. Thanks to "sayane" for the patch.
+* Fixed CoffeeScript support on OSX
+* Added "Content-Length" response header for files served in dev mode (needed for Flash). Thanks to "sayane" for the patch.
 * Fixed typo which resulted in broken support for .html assets. Thanks to "pendletongp" for the patch.
+* Now showing instructive error message when Sass can't be found
 
 Version 1.9.2
 -------------------------------------------------------------

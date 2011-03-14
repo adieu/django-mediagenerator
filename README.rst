@@ -1,7 +1,7 @@
 Improve your user experience with amazingly fast page loads by combining,
 compressing, and versioning your JavaScript & CSS files and images.
-Eliminate unnecessary HTTP requests and maximize cache usage with
-the django-mediagenerator_ asset manager.
+django-mediagenerator_ eliminates unnecessary HTTP requests
+and maximizes cache usage.
 
 Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the

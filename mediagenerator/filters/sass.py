@@ -64,13 +64,16 @@ class Sass(Filter):
                 run.append('--debug-info')
         run.extend(self.path_args)
         shell = sys.platform == 'win32'
-        cmd = Popen(run, shell=shell, universal_newlines=True,
-                    stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output, error = cmd.communicate('@import %s' % self.main_module)
-        assert cmd.wait() == 0, ('Sass command returned bad result (did you '
-                                 'install Sass? http://sass-lang.com):\n%s'
-                                 % error)
-        return output
+        try:
+            cmd = Popen(run, shell=shell, universal_newlines=True,
+                        stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            output, error = cmd.communicate('@import %s' % self.main_module)
+            assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
+            return output
+        except Exception, e:
+            raise ValueError("Failed to execute Sass. Please make sure that "
+                "you have installed Sass (http://sass-lang.com).\n"
+                "Error was: %s" % e)
 
     def _regenerate(self, debug=False):
         if self._dependencies:

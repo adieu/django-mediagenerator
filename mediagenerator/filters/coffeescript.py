@@ -3,6 +3,7 @@ from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import find_file
 from subprocess import Popen, PIPE
 import os
+import sys
 
 class CoffeeScript(Filter):    
     takes_input = False
@@ -48,13 +49,10 @@ class CoffeeScript(Filter):
 
     def _compile(self, input, debug=False):
         try:
-            # coffee
-            # -s = Read from stdin for the source
-            # -c = Compile
-            # -p = print the compiled output to stdout
+            shell = sys.platform == 'win32'
             cmd = Popen(['coffee', '-c', '-p', '-s', '--no-wrap'],
                         stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                        shell=True, universal_newlines=True)
+                        shell=shell, universal_newlines=True)
             output, error = cmd.communicate(input)
             assert cmd.wait() == 0, ('CoffeeScript command returned bad '
                                      'result:\n%s' % error)
