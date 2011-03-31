@@ -1,5 +1,5 @@
 from . import settings as media_settings
-from .settings import GLOBAL_MEDIA_DIRS, GENERATED_MEDIA_MAP_FILE, PRODUCTION_MEDIA_URL, \
+from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
     IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS, DEV_MEDIA_URL
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -7,12 +7,9 @@ from django.utils.importlib import import_module
 from django.utils.http import urlquote
 import os
 import re
-from imp import load_source
+
 try:
-    load_source('GENERATED_MEDIA_MAP_FILE_MODULE', GENERATED_MEDIA_MAP_FILE)
-    from GENERATED_MEDIA_MAP_FILE_MODULE import NAMES
-except IOError:
-    NAMES = None
+    from _generated_media_names import NAMES
 except ImportError:
     NAMES = None
 
@@ -64,15 +61,9 @@ def prepare_patterns(patterns, setting_name):
 
 def get_production_mapping():
     if NAMES is None:
-        if os.path.isfile(GENERATED_MEDIA_MAP_FILE):
-            raise ImportError('Could not import NAMES from the map file: %s. '
-                              'NAMES is needed for production mode. Please '
-                              'run manage.py generatemedia to create it.' % GENERATED_MEDIA_MAP_FILE)
-        else:
-            raise IOError('Could not open the map file with path: %s. This '
+        raise ImportError('Could not import _generated_media_names. This '
                           'file is needed for production mode. Please '
-                          'run manage.py generatemedia to create it. '
-                          'If the file exists, you must adjust the permissions.' % GENERATED_MEDIA_MAP_FILE)
+                          'run manage.py generatemedia to create it.')
     return NAMES
 
 def get_media_mapping():
