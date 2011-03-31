@@ -8,6 +8,7 @@ Version 1.9.3 (in development)
 * Added "Content-Length" response header for files served in dev mode (needed for Flash). Thanks to "sayane" for the patch.
 * Fixed typo which resulted in broken support for .html assets. Thanks to "pendletongp" for the patch.
 * Now showing instructive error message when Sass can't be found
+* Use correct output path for ``_generated_media_names.py`` even when ``manage.py generatemedia`` is not started from the project root. Thanks to "pendletongp" for the patch.
 
 Version 1.9.2
 -------------------------------------------------------------
