@@ -5,7 +5,7 @@ from subprocess import Popen, PIPE
 import os
 import sys
 
-class CoffeeScript(Filter):    
+class CoffeeScript(Filter):
     takes_input = False
 
     def __init__(self, **kwargs):
@@ -50,7 +50,7 @@ class CoffeeScript(Filter):
     def _compile(self, input, debug=False):
         try:
             shell = sys.platform == 'win32'
-            cmd = Popen(['coffee', '-c', '-p', '-s', '--no-wrap'],
+            cmd = Popen(['coffee', '--compile', '--print', '--stdio', '--bare'],
                         stdin=PIPE, stdout=PIPE, stderr=PIPE,
                         shell=shell, universal_newlines=True)
             output, error = cmd.communicate(input)
