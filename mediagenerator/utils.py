@@ -101,7 +101,8 @@ def media_url(key, refresh=False):
 
 def get_media_dirs():
     if not _media_dirs_cache:
-        media_dirs = [os.path.abspath(root) for root in GLOBAL_MEDIA_DIRS]
+        media_dirs = [os.path.normcase(os.path.normpath(root))
+                      for root in GLOBAL_MEDIA_DIRS]
         for app in settings.INSTALLED_APPS:
             if app in IGNORE_APP_MEDIA_DIRS:
                 continue

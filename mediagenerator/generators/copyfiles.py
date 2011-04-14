@@ -37,7 +37,7 @@ class CopyFiles(Generator):
             for file in files:
                 ext = os.path.splitext(file)[1].lstrip('.')
                 path = os.path.join(root_path, file)
-                media_path = path[len(root)+1:].replace(os.sep, '/')
+                media_path = path[len(root) + 1:].replace(os.sep, '/')
                 if ext in COPY_MEDIA_FILETYPES and \
                         not IGNORE_PATTERN.match(media_path):
                     media_files[media_path] = path

@@ -1,7 +1,5 @@
-from jinja2 import nodes, TemplateAssertionError
+from jinja2 import nodes, TemplateAssertionError, Markup as mark_safe
 from jinja2.ext import Extension
-from jinja2 import Markup as mark_safe
-from jinja2.utils import next
 from mediagenerator.generators.bundles.utils import _render_include_media
 
 class MediaExtension(Extension):

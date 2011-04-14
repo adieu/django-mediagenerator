@@ -17,7 +17,7 @@ class MediaMiddleware(object):
     roundtrips for unchanged media.
     """
 
-    MAX_AGE = 60*60*24*365
+    MAX_AGE = 60 * 60 * 24 * 365
 
     def process_request(self, request):
         if not MEDIA_DEV_MODE:

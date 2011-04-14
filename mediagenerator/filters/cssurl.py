@@ -19,7 +19,7 @@ REWRITE_CSS_URLS_RELATIVE_TO_SOURCE = getattr(settings,
     'REWRITE_CSS_URLS_RELATIVE_TO_SOURCE', True)
 
 GENERATE_DATA_URIS = getattr(settings, 'GENERATE_DATA_URIS', False)
-MAX_DATA_URI_FILE_SIZE = getattr(settings, 'MAX_DATA_URI_FILE_SIZE', 12*1024)
+MAX_DATA_URI_FILE_SIZE = getattr(settings, 'MAX_DATA_URI_FILE_SIZE', 12 * 1024)
 IGNORE_PATTERN = prepare_patterns(getattr(settings,
    'IGNORE_DATA_URI_PATTERNS', (r'.*\.htc',)), 'IGNORE_DATA_URI_PATTERNS')
 

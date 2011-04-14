@@ -1,6 +1,6 @@
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import find_file, get_media_dirs
+from mediagenerator.utils import get_media_dirs
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 from textwrap import dedent
 import os
@@ -122,7 +122,7 @@ class Pyjs(Filter):
 
     def get_dev_output(self, name, variation):
         self._collect_all_modules()
-        
+
         name = name.split('/', 1)[-1]
 
         if name == '._pyjs.js':
@@ -272,7 +272,7 @@ class Pyjs(Filter):
                         continue
 
                     path = os.path.join(root, filename)
-                    module_path = path[len(pkgroot)+len(os.sep):]
+                    module_path = path[len(pkgroot) + len(os.sep):]
                     if os.path.basename(module_path) == '__init__.py':
                         module_name = os.path.dirname(module_path)
                     else:
