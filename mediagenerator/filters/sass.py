@@ -10,6 +10,7 @@ import sys
 
 # Emits extra debug info that can be used by the FireSass Firebug plugin
 SASS_DEBUG_INFO = getattr(settings, 'SASS_DEBUG_INFO', False)
+SASS_FRAMEWORKS = getattr(settings, 'SASS_FRAMEWORKS', ())
 
 _RE_FLAGS = re.MULTILINE | re.UNICODE
 multi_line_comment_re = re.compile(r'/\*.*?\*/', _RE_FLAGS | re.DOTALL)
@@ -57,7 +58,10 @@ class Sass(Filter):
         yield self.main_module, self._compiled_hash
 
     def _compile(self, debug=False):
-        run = ['sass', '-C', '-t', 'expanded']
+        extensions = os.path.join(os.path.dirname(__file__), 'sass_compass.rb')
+        run = ['sass', '-C', '-t', 'expanded', '--require', extensions]
+        for framework in SASS_FRAMEWORKS:
+            run.extend(('--require', framework))
         if debug:
             run.append('--line-numbers')
             if SASS_DEBUG_INFO:
@@ -72,7 +76,8 @@ class Sass(Filter):
             return output
         except Exception, e:
             raise ValueError("Failed to execute Sass. Please make sure that "
-                "you have installed Sass (http://sass-lang.com).\n"
+                "you have installed Sass (http://sass-lang.com) and "
+                "Compass (http://compass-style.org).\n"
                 "Error was: %s" % e)
 
     def _regenerate(self, debug=False):
