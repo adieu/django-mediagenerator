@@ -10,6 +10,7 @@ Version 1.10 (in development)
 * Fixed typo which resulted in broken support for ``.html`` assets. Thanks to "pendletongp" for the patch.
 * Now showing instructive error message when Sass can't be found
 * Use correct output path for ``_generated_media_names.py`` even when ``manage.py generatemedia`` is not started from the project root. Thanks to "pendletongp" for the patch.
+* Added support for overriding the ``_generated_media_names`` module's import path and file system location (only needed for non-standard project structures).
 
 Version 1.9.2
 -------------------------------------------------------------

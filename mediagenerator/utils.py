@@ -62,9 +62,10 @@ def prepare_patterns(patterns, setting_name):
 
 def get_production_mapping():
     if NAMES is None:
-        raise ImportError('Could not import _generated_media_names. This '
+        raise ImportError('Could not import %s. This '
                           'file is needed for production mode. Please '
-                          'run manage.py generatemedia to create it.')
+                          'run manage.py generatemedia to create it.'
+                          % GENERATED_MEDIA_NAMES_MODULE)
     return NAMES
 
 def get_media_mapping():
