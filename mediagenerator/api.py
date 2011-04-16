@@ -1,5 +1,6 @@
 from . import settings, utils
-from .settings import GENERATED_MEDIA_DIR, GENERATED_MEDIA_MAP_FILE, MEDIA_GENERATORS
+from .settings import (GENERATED_MEDIA_DIR, GENERATED_MEDIA_NAMES_FILE,
+                       MEDIA_GENERATORS)
 from .utils import load_backend
 from django.utils.http import urlquote
 import os
@@ -37,6 +38,6 @@ def generate_media():
     settings.MEDIA_DEV_MODE = was_dev_mode
 
     # Generate a module with media file name mappings
-    fp = open(GENERATED_MEDIA_MAP_FILE, 'w')
+    fp = open(GENERATED_MEDIA_NAMES_FILE, 'w')
     fp.write('NAMES = %r' % utils.NAMES)
     fp.close()

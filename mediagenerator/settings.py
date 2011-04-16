@@ -9,9 +9,12 @@ if hasattr(__main__, '__file__'):
     _root = os.path.dirname(__main__.__file__)
     _map_file_path = os.path.join(_root, _map_file_path)
     _media_dir = os.path.join(_root, _media_dir)
-GENERATED_MEDIA_DIR = os.path.abspath(getattr(settings, 'GENERATED_MEDIA_DIR',
-                                              _media_dir))
-GENERATED_MEDIA_MAP_FILE = os.path.abspath(_map_file_path)
+GENERATED_MEDIA_DIR = os.path.abspath(
+    getattr(settings, 'GENERATED_MEDIA_DIR', _media_dir))
+GENERATED_MEDIA_NAMES_MODULE = getattr(settings, 'GENERATED_MEDIA_NAMES_MODULE',
+                                       '_generated_media_names')
+GENERATED_MEDIA_NAMES_FILE = os.path.abspath(
+    getattr(settings, 'GENERATED_MEDIA_NAMES_FILE', _map_file_path))
 
 DEV_MEDIA_URL = getattr(settings, 'DEV_MEDIA_URL',
                         getattr(settings, 'STATIC_URL', settings.MEDIA_URL))

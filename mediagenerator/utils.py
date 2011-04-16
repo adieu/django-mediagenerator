@@ -1,6 +1,7 @@
 from . import settings as media_settings
-from .settings import GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL, \
-    IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS, DEV_MEDIA_URL
+from .settings import (GLOBAL_MEDIA_DIRS, PRODUCTION_MEDIA_URL,
+    IGNORE_APP_MEDIA_DIRS, MEDIA_GENERATORS, DEV_MEDIA_URL,
+    GENERATED_MEDIA_NAMES_MODULE)
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
@@ -9,8 +10,8 @@ import os
 import re
 
 try:
-    from _generated_media_names import NAMES
-except ImportError:
+    NAMES = import_module(GENERATED_MEDIA_NAMES_MODULE).NAMES
+except (ImportError, AttributeError):
     NAMES = None
 
 _backends_cache = {}
