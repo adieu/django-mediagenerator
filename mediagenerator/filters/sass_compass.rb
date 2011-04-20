@@ -1,3 +1,4 @@
+require "rubygems"
 require "compass"
 
 module Compass::SassExtensions::Functions::Urls
