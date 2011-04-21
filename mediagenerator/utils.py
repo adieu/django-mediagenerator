@@ -122,6 +122,12 @@ def find_file(name, media_dirs=None):
         if os.path.isfile(path):
             return path
 
+def read_text_file(path):
+    fp = open(path, 'r')
+    output = fp.read()
+    fp.close()
+    return output.decode('utf8')
+
 def load_backend(backend):
     if backend not in _backends_cache:
         module_name, func_name = backend.rsplit('.', 1)

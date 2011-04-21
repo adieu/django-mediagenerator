@@ -1,6 +1,6 @@
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import get_media_dirs
+from mediagenerator.utils import get_media_dirs, read_text_file
 from pyjs.translator import import_compiler, Translator, LIBRARY_PATH
 from textwrap import dedent
 import os
@@ -113,10 +113,8 @@ class Pyjs(Filter):
                 yield self._compiled[name][1]
         else:
             for name in sorted(self._collected.keys()):
-                fp = open(self._collected[name], 'r')
-                output = self._compile(name, fp.read(), dev_mode=False)[0]
-                fp.close()
-                yield output
+                source = read_text_file(self._collected[name])
+                yield self._compile(name, source, dev_mode=False)[0]
 
         yield self._compile_main(dev_mode=False)
 
@@ -134,10 +132,8 @@ class Pyjs(Filter):
             self._regenerate(dev_mode=True)
             return self._compiled[name][1]
         else:
-            fp = open(self._collected[name], 'r')
-            output = self._compile(name, fp.read(), dev_mode=True)[0]
-            fp.close()
-            return output
+            source = read_text_file(self._collected[name])
+            return self._compile(name, source, dev_mode=True)[0]
 
     def get_dev_output_names(self, variation):
         self._collect_all_modules()
@@ -185,9 +181,7 @@ class Pyjs(Filter):
             path = self._collected[module_name]
             mtime = os.path.getmtime(path)
 
-            fp = open(path, 'r')
-            source = fp.read()
-            fp.close()
+            source = read_text_file(path)
 
             try:
                 content, py_deps, js_deps = self._compile(module_name, source, dev_mode=dev_mode)
@@ -228,10 +222,7 @@ class Pyjs(Filter):
         return output.getvalue(), translator.imported_modules, translator.imported_js
 
     def _compile_init(self):
-        fp = open(PYJS_INIT_LIB_PATH, 'r')
-        content = fp.read()
-        fp.close()
-        return INIT_CODE + content
+        return INIT_CODE + read_text_file(PYJS_INIT_LIB_PATH)
 
     def _compile_main(self, dev_mode=False):
         if self.debug is None:

@@ -1,7 +1,7 @@
 from django.conf import settings
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import get_media_dirs, find_file
+from mediagenerator.utils import get_media_dirs, find_file, read_text_file
 from subprocess import Popen, PIPE
 import os
 import posixpath
@@ -103,10 +103,7 @@ class Sass(Filter):
             mtime = os.path.getmtime(path)
             self._dependencies[module_name] = mtime
 
-            fp = open(path, 'r')
-            source = fp.read()
-            fp.close()
-
+            source = read_text_file(path)
             dependencies = self._get_dependencies(source)
 
             for name in dependencies:

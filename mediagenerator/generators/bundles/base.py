@@ -1,6 +1,7 @@
 from .settings import DEFAULT_MEDIA_FILTERS
+from django.utils.encoding import smart_str
 from hashlib import sha1
-from mediagenerator.utils import load_backend, find_file
+from mediagenerator.utils import load_backend, find_file, read_text_file
 import os
 
 class Filter(object):
@@ -147,11 +148,7 @@ class FileFilter(Filter):
         assert name == self.name, (
             '''File name "%s" doesn't match the one in GENERATE_MEDIA ("%s")'''
             % (name, self.name))
-        path = self._get_path()
-        fp = open(path, 'r')
-        output = fp.read()
-        fp.close()
-        return output
+        return read_text_file(self._get_path())
 
     def get_dev_output_names(self, variation):
         path = self._get_path()
@@ -179,16 +176,13 @@ class RawFileFilter(FileFilter):
         assert name == self.name, (
             '''File name "%s" doesn't match the one in GENERATE_MEDIA ("%s")'''
             % (name, self.name))
-        fp = open(self.path, 'r')
-        output = fp.read()
-        fp.close()
-        return output
+        return read_text_file(self.path)
 
     def get_dev_output_names(self, variation):
         mtime = os.path.getmtime(self.path)
         if mtime != self.mtime:
             output = self.get_dev_output(self.name, variation)
-            hash = sha1(output).hexdigest()
+            hash = sha1(smart_str(output)).hexdigest()
         else:
             hash = self.hash
         yield self.name, hash
