@@ -7,14 +7,12 @@ Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the
 `project site`_ for more information.
 
-Most important changes in version 1.9 - 1.9.2
+Most important changes in version 1.10
 =============================================================
 
-* Added CoffeeScript support (use ``.coffee`` extension). Contributed by Andrew Allen.
-* In cache manifests the ``NETWORK`` section now contains "``*``" by default
-* Fixed relative imports in Sass filter
-* Fixed i18n filter in development mode. Contributed by Simon Payne.
-* Added missing ``base.manifest`` to zip package
+* Added Compass support to Sass filter. You now have to install both Compass and Sass. Import Sass/Compass frameworks via ``manage.py importsassframeworks``.
+* Fixed CoffeeScript support on OSX
+* Fixed support for non-ascii chars in input files
 
 See `CHANGELOG.rst`_ for the complete changelog.
 

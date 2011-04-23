@@ -1,12 +1,12 @@
 Changelog
 =============================================================
 
-Version 1.10 (in development)
+Version 1.10
 -------------------------------------------------------------
 
 * Added Compass support to Sass filter. You now have to install both Compass and Sass. Import Sass/Compass frameworks via ``manage.py importsassframeworks``.
 * Fixed CoffeeScript support on OSX
-* Fixed support for non-ascii chars in the input files
+* Fixed support for non-ascii chars in input files
 * Added "Content-Length" response header for files served in dev mode (needed for Flash). Thanks to "sayane" for the patch.
 * Fixed typo which resulted in broken support for ``.html`` assets. Thanks to "pendletongp" for the patch.
 * Now showing instructive error message when Sass can't be found
