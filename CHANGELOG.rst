@@ -1,6 +1,11 @@
 Changelog
 =============================================================
 
+Version 1.10.1
+-------------------------------------------------------------
+
+* Added workaround for Windows bug in Sass 3.1. Backslash characters aren't handled correctly for "-I" import path parameters.
+
 Version 1.10
 -------------------------------------------------------------
 
