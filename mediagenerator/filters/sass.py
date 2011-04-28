@@ -34,7 +34,7 @@ class Sass(Filter):
         self.path += tuple(get_media_dirs())
         self.path_args = []
         for path in self.path:
-            self.path_args.extend(('-I', path))
+            self.path_args.extend(('-I', path.replace('\\', '/')))
 
         self._compiled = None
         self._compiled_hash = None
@@ -59,6 +59,7 @@ class Sass(Filter):
 
     def _compile(self, debug=False):
         extensions = os.path.join(os.path.dirname(__file__), 'sass_compass.rb')
+        extensions = extensions.replace('\\', '/')
         run = ['sass', '-C', '-t', 'expanded', '--require', extensions]
         for framework in SASS_FRAMEWORKS:
             run.extend(('--require', framework))
@@ -71,7 +72,8 @@ class Sass(Filter):
         try:
             cmd = Popen(run, shell=shell, universal_newlines=True,
                         stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            output, error = cmd.communicate('@import %s' % self.main_module)
+            module = self.main_module.rsplit('.', 1)[0]
+            output, error = cmd.communicate('@import "%s"' % module)
             assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
             return output
         except Exception, e:
