@@ -155,7 +155,7 @@ class FileFilter(Filter):
         mtime = os.path.getmtime(path)
         if mtime != self.mtime:
             output = self.get_dev_output(self.name, variation)
-            hash = sha1(output).hexdigest()
+            hash = sha1(smart_str(output)).hexdigest()
         else:
             hash = self.hash
         yield self.name, hash

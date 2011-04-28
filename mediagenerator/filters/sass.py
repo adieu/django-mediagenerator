@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.encoding import smart_str
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_dirs, find_file, read_text_file
@@ -122,7 +123,7 @@ class Sass(Filter):
                     modules.append(name)
 
         self._compiled = self._compile(debug=debug)
-        self._compiled_hash = sha1(self._compiled).hexdigest()
+        self._compiled_hash = sha1(smart_str(self._compiled)).hexdigest()
 
     def _get_dependencies(self, source):
         clean_source = multi_line_comment_re.sub('\n', source)

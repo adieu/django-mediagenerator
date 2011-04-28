@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpRequest
+from django.utils.encoding import smart_str
 from django.views.i18n import javascript_catalog
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
@@ -33,7 +34,7 @@ class I18N(Filter):
     def get_dev_output_names(self, variation):
         language = variation['language']
         content = self._generate(language)
-        hash = sha1(content).hexdigest()
+        hash = sha1(smart_str(content)).hexdigest()
         yield language, hash
 
     def _generate(self, language):

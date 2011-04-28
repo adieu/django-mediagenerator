@@ -1,7 +1,8 @@
+from django.utils.encoding import smart_str
 from django.utils.simplejson import dumps
+from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import get_media_url_mapping
-from hashlib import sha1
 
 _CODE = """
 _$MEDIA_URLS = %s;
@@ -39,7 +40,7 @@ class MediaURL(Filter):
 
     def get_dev_output_names(self, variation):
         content = self._compile()
-        hash = sha1(content).hexdigest()
+        hash = sha1(smart_str(content)).hexdigest()
         yield '.media_url.js', hash
 
     def _compile(self):

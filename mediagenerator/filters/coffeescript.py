@@ -1,3 +1,4 @@
+from django.utils.encoding import smart_str
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
 from mediagenerator.utils import find_file
@@ -44,7 +45,7 @@ class CoffeeScript(Filter):
         source = fp.read()
         fp.close()
         self._compiled = self._compile(source, debug=debug)
-        self._compiled_hash = sha1(self._compiled).hexdigest()
+        self._compiled_hash = sha1(smart_str(self._compiled)).hexdigest()
         self._mtime = mtime
 
     def _compile(self, input, debug=False):
