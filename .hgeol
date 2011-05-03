@@ -2,6 +2,7 @@
 **.txt = native
 **.pyva = native
 **.py = native
+**.rb = native
 **.c = native
 **.cpp = native
 **.cu = native

@@ -12,6 +12,8 @@ import sys
 # Emits extra debug info that can be used by the FireSass Firebug plugin
 SASS_DEBUG_INFO = getattr(settings, 'SASS_DEBUG_INFO', False)
 SASS_FRAMEWORKS = getattr(settings, 'SASS_FRAMEWORKS', ())
+if isinstance(SASS_FRAMEWORKS, basestring):
+    SASS_FRAMEWORKS = (SASS_FRAMEWORKS,)
 
 _RE_FLAGS = re.MULTILINE | re.UNICODE
 multi_line_comment_re = re.compile(r'/\*.*?\*/', _RE_FLAGS | re.DOTALL)

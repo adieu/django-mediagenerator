@@ -70,8 +70,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 USE_I18N = False
 
-MEDIA_ROOT = os.path.join(_project_root, 'media')
-
 TEMPLATE_DIRS = (os.path.join(_project_root, 'templates'),)
 
 ROOT_URLCONF = 'urls'
