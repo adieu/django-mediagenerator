@@ -1,5 +1,6 @@
 from ...filters import sass
 from ...utils import get_media_dirs
+from django.conf import settings
 from django.core.management.base import NoArgsCommand
 from subprocess import Popen, PIPE
 import os
@@ -11,7 +12,9 @@ _frameworks_dir = 'imported-sass-frameworks'
 if hasattr(__main__, '__file__'):
     _root = os.path.dirname(__main__.__file__)
     _frameworks_dir = os.path.join(_root, _frameworks_dir)
-FRAMEWORKS_DIR = os.path.normcase(os.path.abspath(_frameworks_dir))
+FRAMEWORKS_DIR = getattr(settings, 'IMPORTED_SASS_FRAMEWORKS_DIR',
+                         _frameworks_dir)
+FRAMEWORKS_DIR = os.path.normcase(os.path.abspath(FRAMEWORKS_DIR))
 
 PATHS_SCRIPT = os.path.join(os.path.dirname(sass.__file__), 'sass_paths.rb')
 
