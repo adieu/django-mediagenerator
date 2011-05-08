@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.encoding import smart_str
 from mediagenerator.generators.bundles.base import Filter
 
 COMPILATION_LEVEL = getattr(settings, 'CLOSURE_COMPILATION_LEVEL',
@@ -24,7 +25,7 @@ class Closure(Filter):
                              '--compilation_level', self.compilation_level],
                             stdin=PIPE, stdout=PIPE, stderr=PIPE,
                             universal_newlines=True)
-                output, error = cmd.communicate(input)
+                output, error = cmd.communicate(smart_str(input))
                 assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
                 yield output
             except Exception, e:
