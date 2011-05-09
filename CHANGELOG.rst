@@ -1,6 +1,13 @@
 Changelog
 =============================================================
 
+Version 1.10.2
+-------------------------------------------------------------
+
+**Upgrade notes:** If you've specified a custom ``SASS_FRAMEWORKS`` in your ``settings.py`` you now also have to list ``compass`` and ``blueprint`` in that setting.
+
+* All Compass/Sass frameworks (including ``compass`` and ``blueprint``) now have to be listed explictily in the ``SASS_FRAMEWORKS`` setting.
+
 Version 1.10.1
 -------------------------------------------------------------
 
