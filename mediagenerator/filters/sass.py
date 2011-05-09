@@ -11,7 +11,8 @@ import sys
 
 # Emits extra debug info that can be used by the FireSass Firebug plugin
 SASS_DEBUG_INFO = getattr(settings, 'SASS_DEBUG_INFO', False)
-SASS_FRAMEWORKS = getattr(settings, 'SASS_FRAMEWORKS', ())
+SASS_FRAMEWORKS = getattr(settings, 'SASS_FRAMEWORKS',
+                          ('compass', 'blueprint'))
 if isinstance(SASS_FRAMEWORKS, basestring):
     SASS_FRAMEWORKS = (SASS_FRAMEWORKS,)
 
@@ -65,6 +66,9 @@ class Sass(Filter):
         extensions = extensions.replace('\\', '/')
         run = ['sass', '-C', '-t', 'expanded', '--require', extensions]
         for framework in SASS_FRAMEWORKS:
+            # Some frameworks are loaded by default
+            if framework in ('blueprint', 'compass'):
+                continue
             run.extend(('--require', framework))
         if debug:
             run.append('--line-numbers')
