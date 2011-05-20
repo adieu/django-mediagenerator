@@ -92,7 +92,6 @@ def media_urls(key, refresh=False):
         if refresh:
             _refresh_dev_names()
         return [DEV_MEDIA_URL + url for url in _generated_names[key]]
-    print repr(get_production_mapping())
     return [PRODUCTION_MEDIA_URL + get_production_mapping()[key]]
 
 def media_url(key, refresh=False):
