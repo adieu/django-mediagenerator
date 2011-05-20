@@ -22,7 +22,7 @@ class YUICompressor(Filter):
                             universal_newlines=True)
                 output, error = cmd.communicate(smart_str(input))
                 assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
-                yield output
+                yield output.decode('utf-8')
             except Exception, e:
                 raise ValueError("Failed to execute Java VM or yuicompressor. "
                     "Please make sure that you have installed Java "

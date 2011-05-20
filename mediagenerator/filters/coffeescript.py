@@ -1,7 +1,7 @@
 from django.utils.encoding import smart_str
 from hashlib import sha1
 from mediagenerator.generators.bundles.base import Filter
-from mediagenerator.utils import find_file
+from mediagenerator.utils import find_file, read_text_file
 from subprocess import Popen, PIPE
 import os
 import sys
@@ -41,9 +41,7 @@ class CoffeeScript(Filter):
         mtime = os.path.getmtime(path)
         if mtime == self._mtime:
             return
-        fp = open(path, 'r')
-        source = fp.read()
-        fp.close()
+        source = read_text_file(path)
         self._compiled = self._compile(source, debug=debug)
         self._compiled_hash = sha1(smart_str(self._compiled)).hexdigest()
         self._mtime = mtime
@@ -54,10 +52,10 @@ class CoffeeScript(Filter):
             cmd = Popen(['coffee', '--compile', '--print', '--stdio', '--bare'],
                         stdin=PIPE, stdout=PIPE, stderr=PIPE,
                         shell=shell, universal_newlines=True)
-            output, error = cmd.communicate(input)
+            output, error = cmd.communicate(smart_str(input))
             assert cmd.wait() == 0, ('CoffeeScript command returned bad '
                                      'result:\n%s' % error)
-            return output
+            return output.decode('utf-8')
         except Exception, e:
             raise ValueError("Failed to run CoffeeScript compiler for this "
                 "file. Please confirm that the \"coffee\" application is "

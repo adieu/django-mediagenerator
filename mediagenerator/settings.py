@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.encoding import force_unicode
 import os
 import __main__
 
@@ -26,8 +27,10 @@ MEDIA_GENERATORS = getattr(settings, 'MEDIA_GENERATORS', (
     'mediagenerator.generators.manifest.Manifest',
 ))
 
-GLOBAL_MEDIA_DIRS = getattr(settings, 'GLOBAL_MEDIA_DIRS',
-                            getattr(settings, 'STATICFILES_DIRS', ()))
+_global_media_dirs = getattr(settings, 'GLOBAL_MEDIA_DIRS',
+                             getattr(settings, 'STATICFILES_DIRS', ()))
+GLOBAL_MEDIA_DIRS = [os.path.normcase(os.path.normpath(force_unicode(path)))
+                     for path in _global_media_dirs]
 
 IGNORE_APP_MEDIA_DIRS = getattr(settings, 'IGNORE_APP_MEDIA_DIRS',
     ('django.contrib.admin',))
