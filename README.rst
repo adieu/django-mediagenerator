@@ -7,12 +7,10 @@ Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the
 `project site`_ for more information.
 
-Most important changes in version 1.10
+Most important changes in version 1.10.3
 =============================================================
 
-* Added Compass support to Sass filter. You now have to install both Compass and Sass. Import Sass/Compass frameworks via ``manage.py importsassframeworks``.
-* Fixed CoffeeScript support on OSX
-* Fixed support for non-ascii chars in input files
+* Fixed lots of unicode issues
 
 See `CHANGELOG.rst`_ for the complete changelog.
 
