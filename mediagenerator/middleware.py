@@ -37,6 +37,8 @@ class MediaMiddleware(object):
         except KeyError:
             raise Http404('No such media file "%s"' % filename)
         content, mimetype = backend.get_dev_output(filename)
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
         response = HttpResponse(content, content_type=mimetype)
         response['Content-Length'] = len(content)
 
