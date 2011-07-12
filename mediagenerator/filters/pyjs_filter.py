@@ -100,7 +100,7 @@ class Pyjs(Filter):
 
     @classmethod
     def from_default(cls, name):
-        return {'main_module': name.rsplit('.', 1)[0]}
+        return {'main_module': name.rsplit('.', 1)[0].replace('/', '.')}
 
     def get_output(self, variation):
         self._collect_all_modules()
