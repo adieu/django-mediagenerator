@@ -33,7 +33,7 @@ class CopyFiles(Generator):
             yield name, name, hash
 
     def collect_copyable_files(self, media_files, root):
-        for root_path, dirs, files in os.walk(root):
+        for root_path, dirs, files in os.walk(root, followlinks=True):
             for file in files:
                 ext = os.path.splitext(file)[1].lstrip('.')
                 path = os.path.join(root_path, file)

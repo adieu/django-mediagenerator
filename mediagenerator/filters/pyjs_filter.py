@@ -248,7 +248,7 @@ class Pyjs(Filter):
         """Collect modules, so we can handle imports later"""
         for pkgroot in self.path:
             pkgroot = os.path.abspath(pkgroot)
-            for root, dirs, files in os.walk(pkgroot):
+            for root, dirs, files in os.walk(pkgroot, followlinks=True):
                 if '__init__.py' in files:
                     files.remove('__init__.py')
                     # The root __init__.py is ignored
