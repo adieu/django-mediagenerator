@@ -12,6 +12,7 @@ COPY_MEDIA_FILETYPES = getattr(settings, 'COPY_MEDIA_FILETYPES',
 IGNORE_PATTERN = prepare_patterns(getattr(settings,
    'IGNORE_MEDIA_COPY_PATTERNS', ()), 'IGNORE_MEDIA_COPY_PATTERNS')
 
+
 class CopyFiles(Generator):
     def get_dev_output(self, name):
         path = find_file(name)
@@ -33,10 +34,10 @@ class CopyFiles(Generator):
             yield name, name, hash
 
     def collect_copyable_files(self, media_files, root):
-        for root_path, dirs, files in os.walk(root, followlinks=True):
+        for root_path, dirs, files in os.walk(root):
             for file in files:
                 ext = os.path.splitext(file)[1].lstrip('.')
-                path = os.path.join(root_path, file)
+                path = os.path.abspath(os.path.join(root_path, file))
                 media_path = path[len(root) + 1:].replace(os.sep, '/')
                 if ext in COPY_MEDIA_FILETYPES and \
                         not IGNORE_PATTERN.match(media_path):
