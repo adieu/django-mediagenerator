@@ -39,6 +39,8 @@ class MediaMiddleware(object):
         content, mimetype = backend.get_dev_output(filename)
         if isinstance(content, unicode):
             content = content.encode('utf-8')
+        if mimetype.startswith('text/'):
+            mimetype += '; charset=utf-8'
         response = HttpResponse(content, content_type=mimetype)
         response['Content-Length'] = len(content)
 
