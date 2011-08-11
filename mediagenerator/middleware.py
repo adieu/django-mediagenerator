@@ -7,6 +7,12 @@ if MEDIA_DEV_MODE:
     from django.utils.http import http_date
     import time
 
+TEXT_MIME_TYPES = (
+    'application/x-javascript',
+    'application/xhtml+xml',
+    'application/xml',
+)
+
 class MediaMiddleware(object):
     """
     Middleware for serving and browser-side caching of media files.
@@ -39,7 +45,7 @@ class MediaMiddleware(object):
         content, mimetype = backend.get_dev_output(filename)
         if isinstance(content, unicode):
             content = content.encode('utf-8')
-        if mimetype.startswith('text/'):
+        if mimetype.startswith('text/') or mimetype in TEXT_MIME_TYPES:
             mimetype += '; charset=utf-8'
         response = HttpResponse(content, content_type=mimetype)
         response['Content-Length'] = len(content)
