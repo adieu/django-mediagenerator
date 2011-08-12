@@ -43,6 +43,8 @@ class MediaMiddleware(object):
         except KeyError:
             raise Http404('No such media file "%s"' % filename)
         content, mimetype = backend.get_dev_output(filename)
+        if not mimetype:
+            mimetype = 'application/octet-stream'
         if isinstance(content, unicode):
             content = content.encode('utf-8')
         if mimetype.startswith('text/') or mimetype in TEXT_MIME_TYPES:
