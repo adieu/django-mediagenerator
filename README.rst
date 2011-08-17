@@ -10,6 +10,7 @@ Python/pyjs_, CoffeeScript_, and much more. Visit the
 Most important changes in version 1.10.4
 =============================================================
 
+* Fixed remapping of CSS url()s that contain a "?"
 * Fixed serving of unicode content by media middleware
 
 
