@@ -41,7 +41,8 @@ class MediaMiddleware(object):
         try:
             backend = _backend_mapping[filename]
         except KeyError:
-            raise Http404('No such media file "%s"' % filename)
+            raise Http404('The mediagenerator could not find the media file "%s"'
+                          % filename)
         content, mimetype = backend.get_dev_output(filename)
         if not mimetype:
             mimetype = 'application/octet-stream'

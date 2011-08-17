@@ -7,10 +7,11 @@ Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the
 `project site`_ for more information.
 
-Most important changes in version 1.10.3
+Most important changes in version 1.10.4
 =============================================================
 
-* Fixed lots of unicode issues
+* Fixed serving of unicode content by media middleware
+
 
 See `CHANGELOG.rst`_ for the complete changelog.
 
