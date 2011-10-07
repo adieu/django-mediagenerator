@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.utils.encoding import force_unicode
 import os
-import __main__
+import sys
+
+__main__ = sys.modules.get('__main__')
 
 _map_file_path = '_generated_media_names.py'
 _media_dir = '_generated_media'
