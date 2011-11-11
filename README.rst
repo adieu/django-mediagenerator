@@ -1,4 +1,4 @@
-Improve your user experience with amazingly fast page loads by combining,
+Improve your user experience with fast page loads by combining,
 compressing, and versioning your JavaScript & CSS files and images.
 django-mediagenerator_ eliminates unnecessary HTTP requests
 and maximizes cache usage.
