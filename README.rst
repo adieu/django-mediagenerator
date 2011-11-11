@@ -7,12 +7,11 @@ Supports App Engine, Sass_, HTML5 offline manifests,  Jinja2_,
 Python/pyjs_, CoffeeScript_, and much more. Visit the
 `project site`_ for more information.
 
-Most important changes in version 1.10.4
+Most important changes in version 1.11
 =============================================================
 
-* Fixed remapping of CSS url()s that contain a "?"
-* Fixed serving of unicode content by media middleware
-
+* Added LESS support
+* Fixed an incompatibility with App Engine 1.6.0 on Python 2.7
 
 See `CHANGELOG.rst`_ for the complete changelog.
 
